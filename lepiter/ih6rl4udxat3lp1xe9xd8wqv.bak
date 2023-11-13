@@ -86,6 +86,74 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-13T23:21:40.312422+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-13T23:22:00.031317+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "gyAu/nDGDQCfWiZ9DQJRqw=="
+				},
+				"code" : "query := AgdaQuery new."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-13T23:24:55.090915+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-13T23:25:19.283605+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "oS7KCXHGDQCgDwUvDQJRqw=="
+				},
+				"code" : "agda query: query."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
 						"dateAndTimeString" : "2023-11-13T20:40:29.630101+02:00"
 					}
 				},
@@ -97,14 +165,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:39:09.380094+02:00"
+						"dateAndTimeString" : "2023-11-13T21:39:14.882752+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "firDvW7GDQCUEh9AClnVCQ=="
 				},
-				"code" : "agda query: 'IOTCM \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" NonInteractive Indirect ( Cmd_load \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" [\". )'"
+				"code" : "agda query: 'IOTCM \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" NonInteractive Indirect ( Cmd_load \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" [\".\"] )'"
 			},
 			{
 				"__type" : "pharoSnippet",

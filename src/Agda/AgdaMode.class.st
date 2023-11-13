@@ -30,7 +30,7 @@ AgdaMode >> initialize [
 ]
 
 { #category : #accessing }
-AgdaMode >> query: aString [ 
+AgdaMode >> query: aQuery [
 
- input nextPutAll: aString; lf.
+ input nextPutAll: aQuery asString ; lf.
 ]
