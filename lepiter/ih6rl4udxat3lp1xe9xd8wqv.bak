@@ -29,14 +29,82 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:12:39.111431+02:00"
+						"dateAndTimeString" : "2023-11-14T10:17:17.184141+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "aPoxT27GDQCNUwONClnVCQ=="
 				},
-				"code" : ""
+				"code" : "path1 := Path / 'home' / 'apostolis' / 'Workspace' / 'Agtor' / 'src' / 'State' / 'Properties.agda'."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-14T10:17:26.350202+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-14T10:19:18.503381+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "rwVjJ3rGDQCae77VClkV5g=="
+				},
+				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-14T10:00:25.718726+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-14T10:17:51.483325+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "WWaN6nnGDQCYCDWzClkV5g=="
+				},
+				"code" : "file := path2 asFileReference"
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -63,7 +131,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:34:40.576664+02:00"
+						"dateAndTimeString" : "2023-11-14T09:59:57.449042+02:00"
 					}
 				},
 				"uid" : {
@@ -97,14 +165,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T23:22:00.031317+02:00"
+						"dateAndTimeString" : "2023-11-19T21:16:30.429481+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "gyAu/nDGDQCfWiZ9DQJRqw=="
 				},
-				"code" : "query := AgdaQuery new."
+				"code" : "query := AgdaQuery new load: path1. "
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -131,7 +199,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T23:25:19.283605+02:00"
+						"dateAndTimeString" : "2023-11-14T09:29:48.481835+02:00"
 					}
 				},
 				"uid" : {
@@ -139,40 +207,6 @@
 					"uidString" : "oS7KCXHGDQCgDwUvDQJRqw=="
 				},
 				"code" : "agda query: query."
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:40:29.630101+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:39:14.882752+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "firDvW7GDQCUEh9AClnVCQ=="
-				},
-				"code" : "agda query: 'IOTCM \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" NonInteractive Indirect ( Cmd_load \"/home/apostolis/Workspace/Agtor/src/State/Properties.agda\" [\".\"] )'"
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -207,142 +241,6 @@
 					"uidString" : "/5uJv27GDQCUmNhsClnVCQ=="
 				},
 				"code" : "agda getResp."
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:52:59.467038+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:09:28.813904+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "cMx06m7GDQCWvqZwClnVCQ=="
-				},
-				"code" : ""
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:43:08.274928+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:43:17.748222+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "m+M3x27GDQCVKpLXClnVCQ=="
-				},
-				"code" : "out pollString."
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:53:39.418594+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:53:45.262631+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "+WDW7G7GDQCXUKuzClnVCQ=="
-				},
-				"code" : "err pollString."
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:56:56.041804+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T21:03:17.706719+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "Fp+O+G7GDQCXn+tgClnVCQ=="
-				},
-				"code" : "agda yourself"
 			}
 		]
 	},

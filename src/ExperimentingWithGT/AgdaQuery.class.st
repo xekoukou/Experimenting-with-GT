@@ -38,7 +38,7 @@ AgdaQuery >> None [
 
 { #category : #accessing }
 AgdaQuery >> asString [
- ^ 'IOTCM ' , '"' , filePath , '"' , highlightingLevel , ' ' , highlightingMethod , ' (' , interaction , ')'.
+ ^ 'IOTCM ' , '"' , filePath pathString , '" ' , highlightingLevel , ' ' , highlightingMethod , ' (' , interaction , ')'.
 ]
 
 { #category : #accessing }
@@ -51,12 +51,12 @@ AgdaQuery >> initialize [
 { #category : #accessing }
 AgdaQuery >> load [
 
- interaction := 'Cmd_load ' , filePath pathString , ' []'.
+ interaction := 'Cmd_load "' , filePath pathString , '" []'.
 ]
 
 { #category : #accessing }
 AgdaQuery >> load: aFilePath [
  
  filePath := aFilePath.
- interaction := 'Cmd_load ' , aFilePath pathString , ' []'.
+ interaction := 'Cmd_load "' , filePath pathString , '" []'.
 ]

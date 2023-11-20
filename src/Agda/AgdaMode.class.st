@@ -5,14 +5,19 @@ Class {
 		'agda',
 		'out',
 		'err',
-		'input'
+		'input',
+		'response'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
 AgdaMode >> getResp [
- ^ out pollString
+	response := ''.
+	out pollStringWhileTrue: 20 milliseconds do: [ :aString |
+	 (aString findString: 'JSON>')
+		in: [ :index | index > 0 ifTrue: [ response := response , (aString copyFrom: 1 to: index - 1). false ] ifFalse: [ response := response , aString. true ]]].
+		
 ]
 
 { #category : #accessing }
@@ -33,4 +38,5 @@ AgdaMode >> initialize [
 AgdaMode >> query: aQuery [
 
  input nextPutAll: aQuery asString ; lf.
+
 ]
