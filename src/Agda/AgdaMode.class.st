@@ -19,6 +19,7 @@ AgdaMode >> getResp [
 
 { #category : #accessing }
 AgdaMode >> getRespWith: aBlock [
+ ready ifFalse: [
 	response := '['.
 	out
 		pollStringWhileTrue: 20 milliseconds
@@ -35,7 +36,7 @@ AgdaMode >> getRespWith: aBlock [
 							ready := true.
 							false ]
 						ifFalse: [ response := response , aString.
-							true ] ] ]
+							true ] ] ]]
 ]
 
 { #category : #accessing }
@@ -61,15 +62,12 @@ AgdaMode >> kill [
 
 { #category : #accessing }
 AgdaMode >> query: aQuery [
-
 	ready
 		ifTrue: [ ready := false.
 			input
 				nextPutAll: aQuery asString;
-				lf.
-				]
+				lf ]
 		ifFalse: [ ^ ready ]
-
 ]
 
 { #category : #accessing }
@@ -79,7 +77,6 @@ AgdaMode >> query: aQuery with: aBlock [
 			input
 				nextPutAll: aQuery asString;
 				lf.
-				self getRespWith: aBlock.
-				]
+			self getRespWith: aBlock ]
 		ifFalse: [ ^ ready ]
 ]
