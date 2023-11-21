@@ -154,7 +154,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T23:21:40.312422+02:00"
+						"dateAndTimeString" : "2023-11-21T18:38:23.57467+02:00"
 					}
 				},
 				"editEmail" : {
@@ -165,14 +165,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-19T21:16:59.552042+02:00"
+						"dateAndTimeString" : "2023-11-21T18:40:45.574516+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
-					"uidString" : "gyAu/nDGDQCfWiZ9DQJRqw=="
+					"uidString" : "C3rT9w3HDQC1v6k9Bq2EDg=="
 				},
-				"code" : "query := AgdaQuery new load: path2. "
+				"code" : "query := AgdaQuery new load: path2."
 			},
 			{
 				"__type" : "pharoSnippet",
