@@ -41,10 +41,20 @@ AgdaQuery >> asString [
 ]
 
 { #category : #accessing }
+AgdaQuery >> gtQueryFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'query';
+		priority: 10;
+		object: [ self asString ];
+		view: #gtStringFor:
+]
+
+{ #category : #accessing }
 AgdaQuery >> initialize [
- highlightingLevel := 'Interactive'.
- highlightingMethod := 'Indirect'.
- interaction := 'Cmd_constrains'.
+ self NonInteractive ;
+ Direct;
+ load: Path * ''.
 ]
 
 { #category : #accessing }

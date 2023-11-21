@@ -13,6 +13,26 @@ Class {
 }
 
 { #category : #accessing }
+AgdaMode >> getJSONDataFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'JSON Data';
+		priority: 10;
+		object: [ response ];
+		view: #gtJSONDataFor:context:
+]
+
+{ #category : #accessing }
+AgdaMode >> getJSONFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'JSON';
+		priority: 9;
+		object: [ response ];
+		view: #gtJSONFor:context:
+]
+
+{ #category : #accessing }
 AgdaMode >> getResp [
  self getRespWith: [:aString | ]
 ]
@@ -53,6 +73,11 @@ AgdaMode >> initialize [
 	err := agda asynchronousStderr.
 	ready := false.
 	self getResp.
+]
+
+{ #category : #accessing }
+AgdaMode >> isTerminated [
+ ^ agda isTerminated.
 ]
 
 { #category : #accessing }
