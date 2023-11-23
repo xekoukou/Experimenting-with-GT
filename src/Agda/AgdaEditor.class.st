@@ -6,17 +6,18 @@ Class {
 		'editor',
 		'file',
 		'savedText',
-		'editorPane'
+		'editorPane',
+		'agda'
 	],
 	#classVars : [
-		'agda'
+		'agdaC'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
 AgdaEditor class >> path: aPath [
-agda ifNotNil: [agda isTerminated ifTrue: [agda := AgdaMode new.]] ifNil: [agda := AgdaMode new.].
+agdaC ifNotNil: [agdaC isTerminated ifTrue: [agdaC := AgdaMode new.]] ifNil: [agdaC := AgdaMode new.].
 ^ self new initialize: aPath.
 ]
 
@@ -124,6 +125,7 @@ AgdaEditor >> handleResponse: aResp [
 
 { #category : #accessing }
 AgdaEditor >> initialize: aPath [
+    agda := agdaC.
     path := aPath.
 	file := path asFileReference.
 	savedText := BlRunRopedText file: file.
