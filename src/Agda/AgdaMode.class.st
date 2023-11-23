@@ -13,7 +13,40 @@ Class {
 }
 
 { #category : #accessing }
-AgdaMode >> getJSONDataFor: aView [
+AgdaMode >> getResp [
+ self getRespWith: [:aString | ]
+]
+
+{ #category : #accessing }
+AgdaMode >> getRespWith: aBlock [
+	| list par continue rem |
+	ready
+		ifFalse: [ list := LinkedList new.
+			rem := ''.
+			out
+				pollStringWhileTrue: 20 milliseconds
+				do: [ :aString | 
+				Exception signal.
+					rem := rem , aString.
+					continue := true.
+					[ continue ]
+						whileTrue: [ par := self parseResp: rem.
+							rem := par at: 2.
+							(par at: 1) = ''
+								ifTrue: [ continue := false ]
+								ifFalse: [ list add: (par at: 1).
+									aBlock value: (par at: 1) ] ].
+					(aString findString: 'JSON>')
+						in: [ :index | 
+							index > 0
+								ifTrue: [ response := '[' , list asCommaString , ']'.
+									ready := true.
+									false ]
+								ifFalse: [ true ] ] ] ]
+]
+
+{ #category : #accessing }
+AgdaMode >> gtJSONDataFor: aView [
 	<gtView>
 	^ aView forward
 		title: 'JSON Data';
@@ -23,40 +56,13 @@ AgdaMode >> getJSONDataFor: aView [
 ]
 
 { #category : #accessing }
-AgdaMode >> getJSONFor: aView [
+AgdaMode >> gtJSONFor: aView [
 	<gtView>
 	^ aView forward
 		title: 'JSON';
 		priority: 9;
 		object: [ response ];
 		view: #gtJSONFor:context:
-]
-
-{ #category : #accessing }
-AgdaMode >> getResp [
- self getRespWith: [:aString | ]
-]
-
-{ #category : #accessing }
-AgdaMode >> getRespWith: aBlock [
- ready ifFalse: [
-	response := '['.
-	out
-		pollStringWhileTrue: 20 milliseconds
-		do: [ :aString | 
-			(aString findString: 'JSON>')
-				in: [ :index | 
-					index > 0
-						ifTrue: [ | temp |
-							temp := aString copyFrom: 1 to: index - 1.
-							temp size > 0 ifTrue: [ temp := temp truncateTo: (temp size) - 1 ].
-							response := response , temp , ']'.
-							response := response copyReplaceAll: String lf with: ','.
-							aBlock value: response.
-							ready := true.
-							false ]
-						ifFalse: [ response := response , aString.
-							true ] ] ]]
 ]
 
 { #category : #accessing }
@@ -86,13 +92,44 @@ AgdaMode >> kill [
 ]
 
 { #category : #accessing }
+AgdaMode >> parseResp: aResp [
+	| ic i1 i2 i wc q ic1 wc1 w |
+	ic := '{'.
+	wc := '}'.
+	aResp size > 0
+		ifFalse: [ ^ {'' . ''} ]
+		ifTrue: [ i1 := aResp indexOf: '['.
+			i2 := aResp indexOf: '{'.
+			i := i2.
+			i1 = 0 & (i2 = 0) ifTrue: [ ^ {'' . aResp} ].
+			i1 < i2 & (i1 /= 0)
+				ifTrue: [ ic := '['.
+					wc := ']'.
+					i := i1 ].
+			q := 1.
+			w := i + 1.
+			[ q > 0 ]
+				whileTrue: [ ic1 := aResp indexOf: 'ic' startingAt: w.
+					wc1 := aResp indexOf: 'wc'.
+					ic1 < wc1 & (ic1 /= 0)
+						ifTrue: [ q := q + 1.
+							w := ic1 + 1 ].
+					wc1 < ic1 & (wc1 /= 0)
+						ifTrue: [ q := q - 1.
+							w := wc1 + 1 ].
+					(ic1 = 0 & wc1) = 0 ifTrue: [ ^ {'' . aResp} ] ].
+			^ {aResp copyFrom: i to: (w - 1) . aResp copyFrom: w to: (aResp size)} ]
+]
+
+{ #category : #accessing }
 AgdaMode >> query: aQuery [
 	ready
 		ifTrue: [ ready := false.
 			input
 				nextPutAll: aQuery asString;
-				lf ]
-		ifFalse: [ ^ ready ]
+				lf .
+				^ true]
+		ifFalse: [ ^ false ]
 ]
 
 { #category : #accessing }
@@ -102,6 +139,7 @@ AgdaMode >> query: aQuery with: aBlock [
 			input
 				nextPutAll: aQuery asString;
 				lf.
-			self getRespWith: aBlock ]
-		ifFalse: [ ^ ready ]
+			self getRespWith: aBlock.
+			^ true]
+		ifFalse: [ ^ false ]
 ]

@@ -267,14 +267,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-21T22:01:22.790021+02:00"
+						"dateAndTimeString" : "2023-11-22T19:20:09.89447+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "Sxm1dBDHDQCZ+FLlBq2EDg=="
 				},
-				"code" : "agdaFile := AgdaFile path: path2."
+				"code" : "agdaFile := AgdaEditor path: path2."
 			}
 		]
 	},
