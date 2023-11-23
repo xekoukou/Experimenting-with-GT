@@ -26,7 +26,6 @@ AgdaMode >> getRespWith: aBlock [
 			out
 				pollStringWhileTrue: 20 milliseconds
 				do: [ :aString | 
-				Exception signal.
 					rem := rem , aString.
 					continue := true.
 					[ continue ]
@@ -97,11 +96,14 @@ AgdaMode >> parseResp: aResp [
 	ic := ${.
 	wc := $}.
 	aResp size > 0
-		ifFalse: [ ^ {'' . ''} ]
+		ifFalse: [ ^ {''.
+				''} ]
 		ifTrue: [ i1 := aResp indexOf: $[.
 			i2 := aResp indexOf: ${.
 			i := i2.
-			i1 = 0 & (i2 = 0) ifTrue: [ ^ {'' . aResp} ].
+			i1 = 0 & (i2 = 0)
+				ifTrue: [ ^ {''.
+						aResp} ].
 			i1 < i2 & (i1 ~= 0)
 				ifTrue: [ ic := $[.
 					wc := $].
@@ -111,14 +113,19 @@ AgdaMode >> parseResp: aResp [
 			[ q > 0 ]
 				whileTrue: [ ic1 := aResp indexOf: ic startingAt: w.
 					wc1 := aResp indexOf: wc startingAt: w.
-					ic1 < wc1 & (ic1 ~= 0)
-						ifTrue: [ q := q + 1.
-							w := ic1 + 1 ].
-					wc1 < ic1 & (wc1 ~= 0)
-						ifTrue: [ q := q - 1.
-							w := wc1 + 1 ].
-					(ic1 = 0) & (wc1 = 0) ifTrue: [ ^ {'' . aResp} ] ].
-			^ {aResp copyFrom: i to: (w - 1) . aResp copyFrom: w to: (aResp size)} ]
+					ic1 = 0 & (wc1 = 0)
+						ifTrue: [ ^ {''.
+								aResp} ].
+			ic1 ~= 0 & (ic1 < wc1 | (wc1 = 0))
+				ifTrue: [ q := q + 1.
+					w := ic1 + 1 ].
+			wc1 ~= 0 & (wc1 < ic1 | (ic1 = 0))
+				ifTrue: [ q := q - 1.
+					w := wc1 + 1 ]].
+
+
+			^ {aResp copyFrom: i to: w - 1.
+				aResp copyFrom: w to: aResp size} ]
 ]
 
 { #category : #accessing }
