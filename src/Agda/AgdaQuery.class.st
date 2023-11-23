@@ -8,7 +8,7 @@ Class {
 		'interaction',
 		'filePath'
 	],
-	#category : #'ExperimentingWithGT-agda'
+	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
@@ -53,9 +53,7 @@ AgdaQuery >> gtQueryFor: aView [
 
 { #category : #accessing }
 AgdaQuery >> initialize [
- highlightingLevel := 'Interactive'.
- highlightingMethod := 'Indirect'.
- interaction := 'Cmd_constrains'.
+ self NonInteractive; Direct; load: (Path * '').
 ]
 
 { #category : #accessing }
