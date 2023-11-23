@@ -67,18 +67,18 @@ AgdaMode >> gtJSONFor: aView [
 
 { #category : #accessing }
 AgdaMode >> initialize [
-
-	agda := (GtExternalProcessBuilder new: 'agda') 
-	          arg: '--interaction-json';
-	          pipeStdin; 
-	          pipeStdout;
-	          pipeStderr;
-	          spawn.
+	response := ''.
+	agda := (GtExternalProcessBuilder new: 'agda')
+			arg: '--interaction-json';
+			pipeStdin;
+			pipeStdout;
+			pipeStderr;
+			spawn.
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
 	ready := false.
-	self getResp.
+	self getResp
 ]
 
 { #category : #accessing }
@@ -94,30 +94,30 @@ AgdaMode >> kill [
 { #category : #accessing }
 AgdaMode >> parseResp: aResp [
 	| ic i1 i2 i wc q ic1 wc1 w |
-	ic := '{'.
-	wc := '}'.
+	ic := ${.
+	wc := $}.
 	aResp size > 0
 		ifFalse: [ ^ {'' . ''} ]
-		ifTrue: [ i1 := aResp indexOf: '['.
-			i2 := aResp indexOf: '{'.
+		ifTrue: [ i1 := aResp indexOf: $[.
+			i2 := aResp indexOf: ${.
 			i := i2.
 			i1 = 0 & (i2 = 0) ifTrue: [ ^ {'' . aResp} ].
-			i1 < i2 & (i1 /= 0)
-				ifTrue: [ ic := '['.
-					wc := ']'.
+			i1 < i2 & (i1 ~= 0)
+				ifTrue: [ ic := $[.
+					wc := $].
 					i := i1 ].
 			q := 1.
 			w := i + 1.
 			[ q > 0 ]
-				whileTrue: [ ic1 := aResp indexOf: 'ic' startingAt: w.
-					wc1 := aResp indexOf: 'wc'.
-					ic1 < wc1 & (ic1 /= 0)
+				whileTrue: [ ic1 := aResp indexOf: ic startingAt: w.
+					wc1 := aResp indexOf: wc startingAt: w.
+					ic1 < wc1 & (ic1 ~= 0)
 						ifTrue: [ q := q + 1.
 							w := ic1 + 1 ].
-					wc1 < ic1 & (wc1 /= 0)
+					wc1 < ic1 & (wc1 ~= 0)
 						ifTrue: [ q := q - 1.
 							w := wc1 + 1 ].
-					(ic1 = 0 & wc1) = 0 ifTrue: [ ^ {'' . aResp} ] ].
+					(ic1 = 0) & (wc1 = 0) ifTrue: [ ^ {'' . aResp} ] ].
 			^ {aResp copyFrom: i to: (w - 1) . aResp copyFrom: w to: (aResp size)} ]
 ]
 
