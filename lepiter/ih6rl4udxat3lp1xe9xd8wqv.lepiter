@@ -5,7 +5,7 @@
 		"__type" : "snippets",
 		"items" : [
 			{
-				"__type" : "pharoSnippet",
+				"__type" : "textSnippet",
 				"children" : {
 					"__type" : "snippets",
 					"items" : [ ]
@@ -18,7 +18,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T20:09:34.6161+02:00"
+						"dateAndTimeString" : "2023-12-01T18:19:51.755987+02:00"
 					}
 				},
 				"editEmail" : {
@@ -29,14 +29,17 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-14T10:17:17.184141+02:00"
+						"dateAndTimeString" : "2023-12-01T18:20:31.834645+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
-					"uidString" : "aPoxT27GDQCNUwONClnVCQ=="
+					"uidString" : "EEH439bHDQC7pN1+CvZapw=="
 				},
-				"code" : "path1 := Path / 'home' / 'apostolis' / 'Workspace' / 'Agtor' / 'src' / 'State' / 'Properties.agda'."
+				"paragraphStyle" : {
+					"__type" : "textStyle"
+				},
+				"string" : "We first have a path:"
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -73,6 +76,43 @@
 				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
 			},
 			{
+				"__type" : "textSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-01T18:20:40.378123+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-01T18:20:54.132466+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "6Cfe4tbHDQC9jNWKCvZapw=="
+				},
+				"paragraphStyle" : {
+					"__type" : "textStyle"
+				},
+				"string" : "Then we get the filereference."
+			},
+			{
 				"__type" : "pharoSnippet",
 				"children" : {
 					"__type" : "snippets",
@@ -105,6 +145,43 @@
 					"uidString" : "WWaN6nnGDQCYCDWzClkV5g=="
 				},
 				"code" : "file := path2 asFileReference"
+			},
+			{
+				"__type" : "textSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-01T18:21:45.614388+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-01T18:22:05.149213+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "aZXB5tbHDQC+WXGKCvZapw=="
+				},
+				"paragraphStyle" : {
+					"__type" : "textStyle"
+				},
+				"string" : "AgdaMode is our interaction point with agda."
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -297,12 +374,12 @@
 		"__type" : "time",
 		"time" : {
 			"__type" : "dateAndTime",
-			"dateAndTimeString" : "2023-11-13T15:23:16.63086+02:00"
+			"dateAndTimeString" : "2023-12-01T18:19:51.74879+02:00"
 		}
 	},
 	"pageType" : {
 		"__type" : "namedPage",
-		"title" : "Home"
+		"title" : "Treying things out"
 	},
 	"uid" : {
 		"__type" : "uuid",

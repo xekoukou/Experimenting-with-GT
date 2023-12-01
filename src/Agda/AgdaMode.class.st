@@ -7,21 +7,23 @@ Class {
 		'err',
 		'input',
 		'ready',
-		'response'
+		'response',
+		'announcer'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaMode >> getResp [
- self getRespWith: [:aString | ]
+AgdaMode >> announcer [
+
+	^ announcer
 ]
 
 { #category : #accessing }
-AgdaMode >> getRespWith: aBlock [
-	| list par continue rem |
+AgdaMode >> getResp [
+	| par continue rem |
 	ready
-		ifFalse: [ list := LinkedList new.
+		ifFalse: [ response := LinkedList new.
 			rem := ''.
 			out
 				pollStringWhileTrue: 20 milliseconds
@@ -33,39 +35,85 @@ AgdaMode >> getRespWith: aBlock [
 							rem := par at: 2.
 							(par at: 1) = ''
 								ifTrue: [ continue := false ]
-								ifFalse: [ list add: (par at: 1).
-									aBlock value: (par at: 1) ] ].
+								ifFalse: [ response add: (par at: 1).
+									self announcer announce: NewResponse new ] ].
 					(aString findString: 'JSON>')
 						in: [ :index | 
 							index > 0
-								ifTrue: [ response := '[' , list asCommaString , ']'.
-									ready := true.
+								ifTrue: [ ready := true.
 									false ]
 								ifFalse: [ true ] ] ] ]
 ]
 
 { #category : #accessing }
-AgdaMode >> gtJSONDataFor: aView [
+AgdaMode >> gtJSONDataFor: aView context: aContext [
 	<gtView>
-	^ aView forward
-		title: 'JSON Data';
-		priority: 10;
-		object: [ response ];
-		view: #gtJSONDataFor:context:
+	| anIndexStyler aValueStyler |
+	anIndexStyler := aContext
+			at: #gtTreeIndexStyler
+			ifAbsent: [ [ :aNode | aNode key gtDisplayText asRopedText foreground: Color gray ] ].
+	aValueStyler := aContext
+			at: #gtTreeValueStyler
+			ifAbsent: [ [ :aNode | aNode value gtDisplayText ] ].
+
+	^ aView columnedTree
+		title: 'JSON DATA';
+		priority: 9;
+		items: [ GtTreeNode
+				fromCollection: ([ STONJSON fromString: '[' , response asCommaString , ']' ]
+						on: Error
+						do: [ :anException | 
+							OrderedDictionary new
+								at: 'error' put: anException;
+								at: 'description' put: 'Could not parse';
+								yourself ]) ];
+		children: [ :aNode | 
+			(aNode value isCollection and: [ aNode value isString not ])
+				ifTrue: [ GtTreeNode fromNode: aNode ]
+				ifFalse: [ #() ] ];
+		updateWhen: NewResponse in: self announcer;
+		actionUpdateButton;
+		column: 'Index'
+			text: [ :aNode :anIndex | anIndexStyler cull: aNode cull: anIndex ];
+		column: 'Item'
+			text: [ :aNode :anIndex | aValueStyler cull: aNode cull: anIndex ]
+			weight: 3;
+		in: [ :theNewView | 
+			aContext
+				at: #gtTreeExpansionLevel
+				ifPresent: [ :anObject | 
+					anObject isNumber
+						ifTrue: [ theNewView expandUpTo: anObject ]
+						ifFalse: [ anObject = true ifTrue: [ theNewView expandAll ] ] ]
+				ifAbsent: [  "ignore" ] ];
+		send: [ :aNode | 
+			aContext
+				at: #gtTreeSend
+				ifPresent: [ :aBlock | 
+					aBlock
+						cull: aNode value
+						cull: aNode
+						cull: self ]
+				ifAbsent: [ aNode value ] ]
 ]
 
 { #category : #accessing }
 AgdaMode >> gtJSONFor: aView [
 	<gtView>
-	^ aView forward
+
+	^ aView textEditor
 		title: 'JSON';
-		priority: 9;
-		object: [ response ];
-		view: #gtJSONFor:context:
+		priority: 4;
+		text: [ '[' , response asCommaString , ']' ];
+		styler: JSONParser gtStyler;
+		aptitude: BrGlamorousCodeEditorAptitude;
+		updateWhen: NewResponse in: self announcer;
+		actionUpdateButton.
 ]
 
 { #category : #accessing }
 AgdaMode >> initialize [
+	super initialize.
 	response := ''.
 	agda := (GtExternalProcessBuilder new: 'agda')
 			arg: '--interaction-json';
@@ -76,6 +124,7 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
+	announcer := Announcer new.
 	ready := false.
 	self getResp
 ]
