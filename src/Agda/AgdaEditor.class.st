@@ -5,7 +5,9 @@ Class {
 		'path',
 		'file',
 		'savedText',
-		'agda'
+		'agda',
+		'response',
+		'respPos'
 	],
 	#classVars : [
 		'agdaC'
@@ -111,23 +113,27 @@ AgdaEditor >> gtJSONDataFor: aView context: aContext [
 ]
 
 { #category : #accessing }
-AgdaEditor >> handleResponse: aResp [
+AgdaEditor >> handleResponse [
+	[ respPos < response size ]
+		whileTrue: [ respPos := respPos + 1.
+			self inform: (response at: respPos) ]
 ]
 
 { #category : #accessing }
 AgdaEditor >> initialize: aPath [
 	super initialize.
 	agda := agdaC.
+	response := agda response.
 	path := aPath.
 	file := path asFileReference.
-	savedText := BlRunRopedText file: file
+	savedText := BlRunRopedText file: file.
+
+	agda announcer when: NewResponse do: [ self handleResponse ]
 ]
 
 { #category : #accessing }
-AgdaEditor >> save [
-
-	file gtSaveContents: (editor editor text asString).
-	savedText := BlRunRopedText file: file.
-	
-	self changeHappened.
+AgdaEditor >> query: aQuery [
+	(agda query: aQuery)
+		ifTrue: [ respPos := 0.
+			agda getResp ]
 ]

@@ -23,7 +23,7 @@ AgdaMode >> announcer [
 AgdaMode >> getResp [
 	| par continue rem |
 	ready
-		ifFalse: [ response := LinkedList new.
+		ifFalse: [
 			rem := ''.
 			out
 				pollStringWhileTrue: 20 milliseconds
@@ -114,7 +114,7 @@ AgdaMode >> gtJSONFor: aView [
 { #category : #accessing }
 AgdaMode >> initialize [
 	super initialize.
-	response := ''.
+	response := LinkedList new.
 	agda := (GtExternalProcessBuilder new: 'agda')
 			arg: '--interaction-json';
 			pipeStdin;
@@ -181,21 +181,15 @@ AgdaMode >> parseResp: aResp [
 AgdaMode >> query: aQuery [
 	ready
 		ifTrue: [ ready := false.
+			response := response removeAll.
 			input
 				nextPutAll: aQuery asString;
-				lf .
-				^ true]
+				lf.
+			^ true ]
 		ifFalse: [ ^ false ]
 ]
 
 { #category : #accessing }
-AgdaMode >> query: aQuery with: aBlock [
-	ready
-		ifTrue: [ ready := false.
-			input
-				nextPutAll: aQuery asString;
-				lf.
-			self getRespWith: aBlock.
-			^ true]
-		ifFalse: [ ^ false ]
+AgdaMode >> response [
+^ response
 ]
