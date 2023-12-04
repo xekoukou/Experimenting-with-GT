@@ -22,7 +22,7 @@ AgdaEditor >> handeEvents [
 			do: [ agdaF changeBlock value: self parent value: self ];
 		when: BlInfiniteDataSourceChanged
 			do: [ agdaF changeBlock value: self parent value: self ].
-			agdaF announcer when: NewHighLight do: [self updateText].
+			agdaF announcer when: NewHighLight do: [self inUIProcessDo: [self updateText]].
 ]
 
 { #category : #accessing }
