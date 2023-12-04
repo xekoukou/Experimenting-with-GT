@@ -69,7 +69,7 @@ AgdaEditor >> gtEditorView [
 				action: saveBlock).
 	editor
 		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination primaryS;
+				combination: BlKeyCombination primaryC;
 				action: [ | query |
 					saveBlock value.
 					query := AgdaQuery new load: path.
