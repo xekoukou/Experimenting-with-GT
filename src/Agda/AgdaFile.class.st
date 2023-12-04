@@ -1,5 +1,5 @@
 Class {
-	#name : #AgdaEditor,
+	#name : #AgdaFile,
 	#superclass : #Object,
 	#instVars : [
 		'path',
@@ -7,7 +7,8 @@ Class {
 		'savedText',
 		'agda',
 		'response',
-		'respPos'
+		'respPos',
+		'announcer'
 	],
 	#classVars : [
 		'agdaC'
@@ -16,13 +17,13 @@ Class {
 }
 
 { #category : #accessing }
-AgdaEditor class >> path: aPath [
+AgdaFile class >> path: aPath [
 agdaC ifNotNil: [agdaC isTerminated ifTrue: [agdaC := AgdaMode new.]] ifNil: [agdaC := AgdaMode new.].
 ^ self new initialize: aPath.
 ]
 
 { #category : #accessing }
-AgdaEditor >> gtContentsFor: aView [
+AgdaFile >> gtContentsFor: aView [
 	<gtView>
 	
 	| eventLoop |
@@ -41,13 +42,13 @@ AgdaEditor >> gtContentsFor: aView [
 ]
 
 { #category : #accessing }
-AgdaEditor >> gtEditorView [
-	| pane editor editorPane changeBlock toolbar saveBlock |
-	savedText := BlRunRopedText file: file.
+AgdaFile >> gtEditorView [
+	| pane editorPane editor changeBlock toolbar saveBlock |
+	
 	pane := BrVerticalPane new matchParent.
 	editorPane := BrHorizontalPane new matchParent.
 	editorPane padding: (BlInsets all: 5).
-	editor := BrEditor new matchParent.
+	editor := (AgdaEditor new: self) matchParent.
 	changeBlock := [ editorPane
 			childNamed: #modificationBar
 			ifFound: [ :elmt | 
@@ -59,10 +60,8 @@ AgdaEditor >> gtEditorView [
 	saveBlock := [ file gtSaveContents: editor text asString.
 		savedText := BlRunRopedText file: file.
 		changeBlock value ].
-	editor editor
-		when: BrTextEditorInsertedEvent do: changeBlock;
-		when: BrTextEditorDeletedEvent do: changeBlock;
-		when: BlInfiniteDataSourceChanged do: changeBlock.
+
+		
 	editor
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination primaryS;
@@ -109,7 +108,7 @@ AgdaEditor >> gtEditorView [
 ]
 
 { #category : #accessing }
-AgdaEditor >> gtJSONDataFor: aView context: aContext [
+AgdaFile >> gtJSONDataFor: aView context: aContext [
 	<gtView>
 	^ aView forward
 		title: 'JSON DATA';
@@ -119,16 +118,16 @@ AgdaEditor >> gtJSONDataFor: aView context: aContext [
 ]
 
 { #category : #accessing }
-AgdaEditor >> handleResponse [
+AgdaFile >> handleResponse [
 	| data |
 	[ respPos < response size ]
 		whileTrue: [ respPos := respPos + 1.
 			data := STONJSON fromString: (response at: respPos).
-			(data at: 'kind') = 'HighlightingInfo' ifTrue: [self highlight: (data at: 'info' at: 'payload')] ]
+			(data at: 'kind') = 'HighlightingInfo' ifTrue: [self highlight: (data at: 'info' at: 'payload'). editor editor text: savedText] ]
 ]
 
 { #category : #accessing }
-AgdaEditor >> highlight: anArray [
+AgdaFile >> highlight: anArray [
 	savedText unstyle.
 	anArray
 		do: [ :info | 
@@ -198,20 +197,24 @@ AgdaEditor >> highlight: anArray [
 ]
 
 { #category : #accessing }
-AgdaEditor >> initialize: aPath [
+AgdaFile >> initialize: aPath [
 	super initialize.
 	agda := agdaC.
 	response := agda response.
 	path := aPath.
 	file := path asFileReference.
 	savedText := BlRunRopedText file: file.
-
 	agda announcer when: NewResponse do: [ self handleResponse ]
 ]
 
 { #category : #accessing }
-AgdaEditor >> query: aQuery [
+AgdaFile >> query: aQuery [
 	(agda query: aQuery)
 		ifTrue: [ respPos := 0.
 			agda getResp ]
+]
+
+{ #category : #accessing }
+AgdaFile >> savedText [
+^ savedText
 ]
