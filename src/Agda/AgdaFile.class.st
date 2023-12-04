@@ -28,6 +28,11 @@ AgdaFile >> agda [
 ]
 
 { #category : #accessing }
+AgdaFile >> announcer [
+^ announcer
+]
+
+{ #category : #accessing }
 AgdaFile >> changeBlock [
 	^ [:editorPane :editor | editorPane
 			childNamed: #modificationBar
@@ -195,6 +200,7 @@ AgdaFile >> highlight: anArray [
 { #category : #accessing }
 AgdaFile >> initialize: aPath [
 	super initialize.
+	announcer := Announcer new.
 	agda := agdaC.
 	response := agda response.
 	path := aPath.
