@@ -73,8 +73,7 @@ AgdaEditor >> gtEditorView [
 				action: [ | query |
 					saveBlock value.
 					query := AgdaQuery new load: path.
-					self query: query.
-					editor editor text: savedText glamorousCodeFont ]).
+					self query: query.]).
 	editor editor text: (BlRunRopedText file: file) glamorousCodeFont.
 	editorPane
 		addChild: (BlElement new
