@@ -55,7 +55,7 @@ AgdaFile >> gtContentsFor: aView [
 
 { #category : #accessing }
 AgdaFile >> gtEditorView [
-	| pane editorPane editor toolbar saveBlock |
+	| pane editorPane editor toolbar |
 	pane := BrVerticalPane new matchParent.
 	editorPane := BrHorizontalPane new matchParent.
 	editorPane padding: (BlInsets all: 5).
@@ -67,21 +67,17 @@ AgdaFile >> gtEditorView [
 					yourself)
 			as: #modificationBar;
 		addChild: editor as: #editor.
-
-
-	saveBlock := [ file gtSaveContents: editor text asString.
-		savedText := BlRunRopedText file: file.
-		(self changeBlock value: editorPane value: editor) ].
+	
 
 	editor
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination primaryS;
-				action: saveBlock).
+				action: [ self saveBlock value: editorPane value: editor] ).
 	editor
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination primaryC;
 				action: [ | query |
-					saveBlock value.
+					self saveBlock value: editorPane value: editor.
 					query := AgdaQuery new load: path.
 					self query: query ]).
 	editor editor text: (BlRunRopedText file: file) glamorousCodeFont.
@@ -96,7 +92,7 @@ AgdaFile >> gtEditorView [
 				beSmallSize;
 				icon: BrGlamorousVectorIcons accept;
 				label: 'Save';
-				action: saveBlock)
+				action: [ self saveBlock value: editorPane value: editor])
 		as: #saveButton.
 	toolbar
 		addChild: (BrButton new
@@ -105,7 +101,7 @@ AgdaFile >> gtEditorView [
 				icon: BrGlamorousVectorIcons cancel;
 				label: 'Cancel';
 				action: [ editor editor text: (BlRunRopedText file: self) glamorousCodeFont.
-					(self changeBlock value: editorPane value: editor) ])
+					self changeBlock value: editorPane value: editor ])
 		as: #cancelButton.
 	pane addChild: editorPane.
 	pane addChild: toolbar as: #toolbar.
@@ -217,6 +213,13 @@ AgdaFile >> query: aQuery [
 	(agda query: aQuery)
 		ifTrue: [ respPos := 0.
 			agda getResp ]
+]
+
+{ #category : #accessing }
+AgdaFile >> saveBlock [
+	^ [:editorPane :editor | file gtSaveContents: editor text asString.
+		savedText := BlRunRopedText file: file.
+		self changeBlock value: editorPane value: editor ].
 ]
 
 { #category : #accessing }

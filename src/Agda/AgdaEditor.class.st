@@ -14,23 +14,14 @@ AgdaEditor class >> new: anAgdaFile [
 ]
 
 { #category : #accessing }
-AgdaEditor >> changeBlock [
-	^ [ self parent
-		childNamed: #modificationBar
-		ifFound: [ :elmt | 
-			elmt
-				inUIProcessDo: [ elmt
-						background: ((self editor text equalsIgnoringAttributes: agdaF savedText)
-								ifTrue: [ Color transparent ]
-								ifFalse: [ elmt theme status changesBackgroundColor ]) ] ] ]
-]
-
-{ #category : #accessing }
 AgdaEditor >> handeEvents [
 	self editor
-		when: BrTextEditorInsertedEvent do: self changeBlock;
-		when: BrTextEditorDeletedEvent do: self changeBlock;
-		when: BlInfiniteDataSourceChanged do: self changeBlock.
+		when: BrTextEditorInsertedEvent
+			do: [ agdaF changeBlock value: self parent value: self ];
+		when: BrTextEditorDeletedEvent
+			do: [ agdaF changeBlock value: self parent value: self ];
+		when: BlInfiniteDataSourceChanged
+			do: [ agdaF changeBlock value: self parent value: self ].
 ]
 
 { #category : #accessing }
