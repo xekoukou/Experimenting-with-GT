@@ -123,13 +123,31 @@ AgdaEditor >> handleResponse [
 
 { #category : #accessing }
 AgdaEditor >> highlight: anArray [
-	self inform: 'ho'.
+
 	savedText unstyle.
 	anArray
 		do: [ :info | 
-			| text range |
+			| text range type |
 			range := info at: 'range'.
-			text := savedText from: (range at: 1) to: ((range at: 2) min: savedText size) ]
+			text := savedText from: (range at: 1) to: ((range at: 2) min: savedText size).
+			type := info at: 'atoms' at: 1.
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'symbol' ifTrue: [ text foreground: Color black.].
+			type = 'keyword' ifTrue: [ text foreground: Color orange.].
+			type = 'pragma' ifTrue: [ text foreground: Color black.].
+			type = 'comment' ifTrue: [ text foreground: Color red.].
+			type = 'module' ifTrue: [ text foreground: Color purple.].
+			type = 'datatype' ifTrue: [ text foreground: Color blue.].
+			type = 'primitive' ifTrue: [ text foreground: Color green.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			type = 'markup' ifTrue: [ text foreground: Color red.].
+			
+			 ]
 ]
 
 { #category : #accessing }
