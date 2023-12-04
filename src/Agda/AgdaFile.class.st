@@ -23,6 +23,18 @@ agdaC ifNotNil: [agdaC isTerminated ifTrue: [agdaC := AgdaMode new.]] ifNil: [ag
 ]
 
 { #category : #accessing }
+AgdaFile >> changeBlock [
+	^ [:editorPane :editor | editorPane
+			childNamed: #modificationBar
+			ifFound: [ :elmt | 
+				elmt
+					inUIProcessDo: [ elmt
+							background: ((editor editor text equalsIgnoringAttributes: savedText)
+									ifTrue: [ Color transparent ]
+									ifFalse: [ elmt theme status changesBackgroundColor ]) ] ] ].
+]
+
+{ #category : #accessing }
 AgdaFile >> gtContentsFor: aView [
 	<gtView>
 	
@@ -43,25 +55,24 @@ AgdaFile >> gtContentsFor: aView [
 
 { #category : #accessing }
 AgdaFile >> gtEditorView [
-	| pane editorPane editor changeBlock toolbar saveBlock |
-	
+	| pane editorPane editor toolbar saveBlock |
 	pane := BrVerticalPane new matchParent.
 	editorPane := BrHorizontalPane new matchParent.
 	editorPane padding: (BlInsets all: 5).
 	editor := (AgdaEditor new: self) matchParent.
-	changeBlock := [ editorPane
-			childNamed: #modificationBar
-			ifFound: [ :elmt | 
-				elmt
-					inUIProcessDo: [ elmt
-							background: ((editor editor text equalsIgnoringAttributes: savedText)
-									ifTrue: [ Color transparent ]
-									ifFalse: [ elmt theme status changesBackgroundColor ]) ] ] ].
+	editorPane
+		addChild: (BlElement new
+					width: 5;
+					constraintsDo: [ :c | c vertical matchParent ];
+					yourself)
+			as: #modificationBar;
+		addChild: editor as: #editor.
+
+
 	saveBlock := [ file gtSaveContents: editor text asString.
 		savedText := BlRunRopedText file: file.
-		changeBlock value ].
+		(self changeBlock value: editorPane value: editor) ].
 
-		
 	editor
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination primaryS;
@@ -72,15 +83,9 @@ AgdaFile >> gtEditorView [
 				action: [ | query |
 					saveBlock value.
 					query := AgdaQuery new load: path.
-					self query: query.]).
+					self query: query ]).
 	editor editor text: (BlRunRopedText file: file) glamorousCodeFont.
-	editorPane
-		addChild: (BlElement new
-					width: 5;
-					constraintsDo: [ :c | c vertical matchParent ];
-					yourself)
-			as: #modificationBar;
-		addChild: editor as: #editor.
+
 	toolbar := BrToolbar new
 			aptitude: (BrGlamorousToolbarAptitude new spacing: 5);
 			fitContent;
@@ -100,7 +105,7 @@ AgdaFile >> gtEditorView [
 				icon: BrGlamorousVectorIcons cancel;
 				label: 'Cancel';
 				action: [ editor editor text: (BlRunRopedText file: self) glamorousCodeFont.
-					changeBlock value ])
+					(self changeBlock value: editorPane value: editor) ])
 		as: #cancelButton.
 	pane addChild: editorPane.
 	pane addChild: toolbar as: #toolbar.
