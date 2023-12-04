@@ -14,7 +14,7 @@ AgdaEditor class >> new: anAgdaFile [
 ]
 
 { #category : #accessing }
-AgdaEditor >> handeEvents [
+AgdaEditor >> handleEvents [
 	self editor
 		when: BrTextEditorInsertedEvent
 			do: [ agdaF changeBlock value: self parent value: self ];
@@ -22,7 +22,7 @@ AgdaEditor >> handeEvents [
 			do: [ agdaF changeBlock value: self parent value: self ];
 		when: BlInfiniteDataSourceChanged
 			do: [ agdaF changeBlock value: self parent value: self ].
-			agdaF announcer when: NewHighLight do: [self inUIProcessDo: [self updateText]].
+			agdaF announcer when: NewHighLight do: [ self updateText].
 ]
 
 { #category : #accessing }
@@ -30,7 +30,7 @@ AgdaEditor >> initialize: anAgdaFile [
 super initialize.
 agdaF := anAgdaFile.
 self editor text: (agdaF savedText) glamorousCodeFont.
-self handeEvents.
+self handleEvents.
 self shortcuts.
 ]
 
@@ -53,5 +53,5 @@ AgdaEditor >> shortcuts [
 
 { #category : #accessing }
 AgdaEditor >> updateText [
-self editor text: (agdaF savedText) glamorousCodeFont.
+self inUIProcessDo: [self editor text: (agdaF savedText) glamorousCodeFont. ].
 ]

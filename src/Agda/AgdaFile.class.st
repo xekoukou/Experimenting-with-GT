@@ -8,7 +8,8 @@ Class {
 		'agda',
 		'response',
 		'respPos',
-		'announcer'
+		'announcer',
+		'info'
 	],
 	#classVars : [
 		'agdaC'
@@ -202,10 +203,16 @@ AgdaFile >> highlight: anArray [
 ]
 
 { #category : #accessing }
+AgdaFile >> info [
+^ info.
+]
+
+{ #category : #accessing }
 AgdaFile >> initialize: aPath [
 	super initialize.
 	announcer := Announcer new.
 	agda := agdaC.
+	info := 'hi there' asRopedText glamorousCodeFont.
 	response := agda response.
 	path := aPath.
 	file := path asFileReference.
