@@ -123,31 +123,32 @@ AgdaEditor >> handleResponse [
 
 { #category : #accessing }
 AgdaEditor >> highlight: anArray [
-
 	savedText unstyle.
 	anArray
 		do: [ :info | 
-			| text range type |
+			| text range type atoms comp |
 			range := info at: 'range'.
 			text := savedText from: (range at: 1) to: ((range at: 2) min: savedText size).
-			type := info at: 'atoms' at: 1.
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'symbol' ifTrue: [ text foreground: Color black.].
-			type = 'keyword' ifTrue: [ text foreground: Color orange.].
-			type = 'pragma' ifTrue: [ text foreground: Color black.].
-			type = 'comment' ifTrue: [ text foreground: Color red.].
-			type = 'module' ifTrue: [ text foreground: Color purple.].
-			type = 'datatype' ifTrue: [ text foreground: Color blue.].
-			type = 'primitive' ifTrue: [ text foreground: Color green.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			type = 'markup' ifTrue: [ text foreground: Color red.].
-			
-			 ]
+			atoms := info at: 'atoms'.
+			type := atoms at: 1.
+			comp := [ :co | atoms size > 1 ifFalse: [ false ] ifTrue: [ (atoms at: 2) = co ] ].
+
+			type = 'markup' ifTrue: [ text foreground: Color red muchDarker ].
+			type = 'symbol' ifTrue: [ text foreground: Color black ].
+			type = 'keyword' ifTrue: [ text foreground: Color orange muchDarker].
+			type = 'pragma' ifTrue: [ text foreground: Color black ].
+			type = 'comment' ifTrue: [ text foreground: Color red muchDarker].
+			type = 'module' ifTrue: [ text foreground: Color purple muchDarker].
+			type = 'datatype' & (atoms size = 1) ifTrue: [ text foreground: Color blue muchDarker].
+			type = 'datatype' & (comp value: 'operator')
+				ifTrue: [ text foreground: Color blue muchDarker].
+			type = 'primitive' ifTrue: [ text foreground: Color blue muchDarker].
+			type = 'function' & (comp value: 'operator')
+				ifTrue: [ text foreground: Color blue muchDarker].
+			type = 'inductiveconstructor' ifTrue: [ text foreground: Color green muchDarker ].
+			type = 'function' & (atoms size = 1) ifTrue: [ text foreground: Color blue muchDarker ].
+			type = 'generalizable' ifTrue: [ text foreground: Color black ].
+			type = 'bound' ifTrue: [ text foreground: Color black ]. ]
 ]
 
 { #category : #accessing }
