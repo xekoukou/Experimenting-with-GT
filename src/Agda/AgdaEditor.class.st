@@ -27,6 +27,25 @@ AgdaEditor >> handeEvents [
 { #category : #accessing }
 AgdaEditor >> initialize: anAgdaFile [ 
 super initialize.
+self editor text: (agdaF savedText).
 agdaF := anAgdaFile.
 self handeEvents.
+self shortcuts.
+]
+
+{ #category : #accessing }
+AgdaEditor >> shortcuts [
+	self
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination primaryS;
+				action: [ agdaF saveBlock value: self parent value: self] ).
+	self
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination primaryC;
+				action: [ | query |
+					agdaF saveBlock value: self parent value: self.
+					query := AgdaQuery new load: (agdaF path).
+					agdaF query: query ]).
+	
+
 ]

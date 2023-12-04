@@ -69,18 +69,6 @@ AgdaFile >> gtEditorView [
 		addChild: editor as: #editor.
 	
 
-	editor
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination primaryS;
-				action: [ self saveBlock value: editorPane value: editor] ).
-	editor
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination primaryC;
-				action: [ | query |
-					self saveBlock value: editorPane value: editor.
-					query := AgdaQuery new load: path.
-					self query: query ]).
-	editor editor text: (BlRunRopedText file: file) glamorousCodeFont.
 
 	toolbar := BrToolbar new
 			aptitude: (BrGlamorousToolbarAptitude new spacing: 5);
