@@ -67,8 +67,16 @@ AgdaEditor >> gtEditorView [
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination primaryS;
 				action: saveBlock).
-	editor editor text: (BlRunRopedText file: file) glamorousRegularFont.
-		editorPane
+	editor
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination primaryS;
+				action: [ | query |
+					saveBlock value.
+					query := AgdaQuery new load: path.
+					self query: query.
+					editor editor text: savedText glamorousCodeFont ]).
+	editor editor text: (BlRunRopedText file: file) glamorousCodeFont.
+	editorPane
 		addChild: (BlElement new
 					width: 5;
 					constraintsDo: [ :c | c vertical matchParent ];
@@ -93,13 +101,12 @@ AgdaEditor >> gtEditorView [
 				beSmallSize;
 				icon: BrGlamorousVectorIcons cancel;
 				label: 'Cancel';
-				action: [ editor editor text: (BlRunRopedText file: self) glamorousRegularFont.
+				action: [ editor editor text: (BlRunRopedText file: self) glamorousCodeFont.
 					changeBlock value ])
 		as: #cancelButton.
 	pane addChild: editorPane.
 	pane addChild: toolbar as: #toolbar.
 	^ pane
-	
 ]
 
 { #category : #accessing }
