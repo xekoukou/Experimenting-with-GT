@@ -124,7 +124,7 @@ AgdaFile >> handleResponse [
 	[ respPos < response size ]
 		whileTrue: [ respPos := respPos + 1.
 			data := STONJSON fromString: (response at: respPos).
-			(data at: 'kind') = 'HighlightingInfo' ifTrue: [self highlight: (data at: 'info' at: 'payload'). editor editor text: savedText] ]
+			(data at: 'kind') = 'HighlightingInfo' ifTrue: [self highlight: (data at: 'info' at: 'payload').] ]
 ]
 
 { #category : #accessing }
