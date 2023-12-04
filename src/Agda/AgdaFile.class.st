@@ -23,6 +23,11 @@ agdaC ifNotNil: [agdaC isTerminated ifTrue: [agdaC := AgdaMode new.]] ifNil: [ag
 ]
 
 { #category : #accessing }
+AgdaFile >> agda [
+^ agda
+]
+
+{ #category : #accessing }
 AgdaFile >> changeBlock [
 	^ [:editorPane :editor | editorPane
 			childNamed: #modificationBar
@@ -194,6 +199,11 @@ AgdaFile >> initialize: aPath [
 	file := path asFileReference.
 	savedText := BlRunRopedText file: file.
 	agda announcer when: NewResponse do: [ self handleResponse ]
+]
+
+{ #category : #accessing }
+AgdaFile >> path [
+^ path
 ]
 
 { #category : #accessing }

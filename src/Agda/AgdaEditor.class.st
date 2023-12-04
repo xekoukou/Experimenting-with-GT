@@ -27,8 +27,8 @@ AgdaEditor >> handeEvents [
 { #category : #accessing }
 AgdaEditor >> initialize: anAgdaFile [ 
 super initialize.
-self editor text: (agdaF savedText).
 agdaF := anAgdaFile.
+self editor text: (agdaF savedText) glamorousCodeFont.
 self handeEvents.
 self shortcuts.
 ]
