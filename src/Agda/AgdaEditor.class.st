@@ -22,6 +22,7 @@ AgdaEditor >> handeEvents [
 			do: [ agdaF changeBlock value: self parent value: self ];
 		when: BlInfiniteDataSourceChanged
 			do: [ agdaF changeBlock value: self parent value: self ].
+			agdaF announcer when: NewHighLight do: [self updateText].
 ]
 
 { #category : #accessing }
@@ -48,4 +49,9 @@ AgdaEditor >> shortcuts [
 					agdaF query: query ]).
 	
 
+]
+
+{ #category : #accessing }
+AgdaEditor >> updateText [
+self editor text: (agdaF savedText) glamorousCodeFont.
 ]
