@@ -114,9 +114,22 @@ AgdaEditor >> gtJSONDataFor: aView context: aContext [
 
 { #category : #accessing }
 AgdaEditor >> handleResponse [
+	| data |
 	[ respPos < response size ]
 		whileTrue: [ respPos := respPos + 1.
-			self inform: (response at: respPos) ]
+			data := STONJSON fromString: (response at: respPos).
+			(data at: 'kind') = 'HighlightingInfo' ifTrue: [self highlight: (data at: 'info' at: 'payload')] ]
+]
+
+{ #category : #accessing }
+AgdaEditor >> highlight: anArray [
+	self inform: 'ho'.
+	savedText unstyle.
+	anArray
+		do: [ :info | 
+			| text range |
+			range := info at: 'range'.
+			text := savedText from: (range at: 1) to: ((range at: 2) min: savedText size) ]
 ]
 
 { #category : #accessing }
