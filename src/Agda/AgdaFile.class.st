@@ -214,6 +214,7 @@ AgdaFile >> initialize: aPath [
 	agda := agdaC.
 	info := 'hi there' asRopedText glamorousCodeFont.
 	response := agda response.
+	respPos := 0.
 	path := aPath.
 	file := path asFileReference.
 	savedText := BlRunRopedText file: file.
