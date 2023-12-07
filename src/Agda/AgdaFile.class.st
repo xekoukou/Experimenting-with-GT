@@ -99,8 +99,8 @@ AgdaFile >> gtEditorView [
 				beSmallSize;
 				icon: BrGlamorousVectorIcons cancel;
 				label: 'Cancel';
-				action: [ editor editor text: (BlRunRopedText file: self) glamorousCodeFont.
-					self changeBlock value: editorPane value: editor ])
+				action: [ editor editor text: savedText glamorousCodeFont.
+					self changeBlock value: editorPane value: editor. ])
 		as: #cancelButton.
 	pane addChild: editorPane.
 	pane addChild: toolbar as: #toolbar.
@@ -218,7 +218,7 @@ AgdaFile >> initialize: aPath [
 	path := aPath.
 	file := path asFileReference.
 	savedText := BlRunRopedText file: file.
-	agda announcer when: NewResponse do: [ self handleResponse ]
+	agda announcer when: NewResponse send: #handleResponse to: self.
 ]
 
 { #category : #accessing }
