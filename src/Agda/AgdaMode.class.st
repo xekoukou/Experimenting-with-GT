@@ -8,19 +8,40 @@ Class {
 		'input',
 		'ready',
 		'response',
-		'announcer'
+		'announcer',
+		'stream'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaMode >> announcer [
-
-	^ announcer
+AgdaMode >> getResp [
+	| par continue rem |
+	ready
+		ifFalse: [
+			rem := ''.
+			out
+				pollStringWhileTrue: 20 milliseconds
+				do: [ :aString | 
+					rem := rem , aString.
+					continue := true.
+					[ continue ]
+						whileTrue: [ par := self parseResp: rem.
+							rem := par at: 2.
+							(par at: 1) = ''
+								ifTrue: [ continue := false ]
+								ifFalse: [ response add: (par at: 1).
+									self announcer announce: NewResponse new ] ].
+					(aString findString: 'JSON>')
+						in: [ :index | 
+							index > 0
+								ifTrue: [ ready := true.
+									false ]
+								ifFalse: [ true ] ] ] ]
 ]
 
 { #category : #accessing }
-AgdaMode >> getResp [
+AgdaMode >> getResp2 [
 	| par continue rem |
 	ready
 		ifFalse: [
@@ -114,7 +135,6 @@ AgdaMode >> gtJSONFor: aView [
 { #category : #accessing }
 AgdaMode >> initialize [
 	super initialize.
-	response := LinkedList new.
 	agda := (GtExternalProcessBuilder new: 'agda')
 			arg: '--interaction-json';
 			pipeStdin;
@@ -124,9 +144,8 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
-	announcer := Announcer new.
 	ready := false.
-	self getResp
+	stream := AgdaStream stream: (IOAsyncStream process: agda buff: out).
 ]
 
 { #category : #accessing }
@@ -185,7 +204,7 @@ AgdaMode >> query: aQuery [
 			input
 				nextPutAll: aQuery asString;
 				lf.
-			^ true ]
+			 ^ true]
 		ifFalse: [ ^ false ]
 ]
 

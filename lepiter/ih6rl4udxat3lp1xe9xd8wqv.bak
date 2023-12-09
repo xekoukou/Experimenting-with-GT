@@ -378,7 +378,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-12-04T15:30:07.490426+02:00"
+						"dateAndTimeString" : "2023-12-04T15:41:42.557155+02:00"
 					}
 				},
 				"uid" : {
@@ -386,6 +386,40 @@
 					"uidString" : "f/s32RDIDQCvsN7dA0cRXg=="
 				},
 				"code" : "AgdaEditor new."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-08T13:19:11.482328+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-08T13:19:17.540866+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "EyGTfV/IDQCECnzyCWJcqw=="
+				},
+				"code" : "IO"
 			}
 		]
 	},
