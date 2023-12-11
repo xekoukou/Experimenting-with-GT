@@ -41,32 +41,6 @@ AgdaMode >> getResp [
 ]
 
 { #category : #accessing }
-AgdaMode >> getResp2 [
-	| par continue rem |
-	ready
-		ifFalse: [
-			rem := ''.
-			out
-				pollStringWhileTrue: 20 milliseconds
-				do: [ :aString | 
-					rem := rem , aString.
-					continue := true.
-					[ continue ]
-						whileTrue: [ par := self parseResp: rem.
-							rem := par at: 2.
-							(par at: 1) = ''
-								ifTrue: [ continue := false ]
-								ifFalse: [ response add: (par at: 1).
-									self announcer announce: NewResponse new ] ].
-					(aString findString: 'JSON>')
-						in: [ :index | 
-							index > 0
-								ifTrue: [ ready := true.
-									false ]
-								ifFalse: [ true ] ] ] ]
-]
-
-{ #category : #accessing }
 AgdaMode >> gtJSONDataFor: aView context: aContext [
 	<gtView>
 	| anIndexStyler aValueStyler |

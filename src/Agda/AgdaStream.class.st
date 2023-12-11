@@ -73,7 +73,7 @@ AgdaStream >> pollNext: anAsynchronousContext [
 	<return: #AsyncPoll>
 	previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
 	
-    (rem findString: 'JSON>') in: [ :index | index > 0 ifTrue: [ rem := ''. AsyncPoll ready: '{"readyForNewQuery" : true }' ] ].
+    (rem findString: 'JSON>') in: [ :index | index > 0 ifTrue: [ rem := ''. AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
     
 	(stream pollNext: anAsynchronousContext)
 		ifReady: [ :aReadyPoll | 
