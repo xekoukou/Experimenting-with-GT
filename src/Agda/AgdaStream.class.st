@@ -72,25 +72,31 @@ AgdaStream >> pollNext: anAsynchronousContext [
 
 	<return: #AsyncPoll>
 	previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
-	
-    (rem findString: 'JSON>') in: [ :index | index > 0 ifTrue: [ rem := ''. AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
-    
+
+	(rem findString: 'JSON>')
+		in: [ :index | 
+			index > 0
+				ifTrue: [ rem := ''.
+					AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
+
 	(stream pollNext: anAsynchronousContext)
 		ifReady: [ :aReadyPoll | 
-			| aString continue par |
-			aString := aReadyPoll value.
-			rem := rem , aString.
-			continue := true.
-			[ continue ]
-				whileTrue: [ par := self parseResp: rem.
-					rem := par at: 2.
-					(par at: 1) = ''
-						ifTrue: [ continue := false ]
-						ifFalse: [ previous add: (par at: 1) ] ].
+			| continue par |
+			aReadyPoll value
+				ifSome: [ :aString | 
+					rem := rem , aString.
+					continue := true.
+					[ continue ]
+						whileTrue: [ par := self parseResp: rem.
+							rem := par at: 2.
+							(par at: 1) = ''
+								ifTrue: [ continue := false ]
+								ifFalse: [ previous add: (par at: 1) ] ].
 
-			
-			previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
-			^ AsyncPoll pending ]
+
+					previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
+					^ AsyncPoll pending ]
+				ifNone: [ ^ aReadyPoll ] ]
 		ifPending: [ :aPendingPoll | aPendingPoll ]
 ]
 

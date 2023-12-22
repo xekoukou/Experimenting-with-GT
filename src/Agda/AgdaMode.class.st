@@ -6,39 +6,10 @@ Class {
 		'out',
 		'err',
 		'input',
-		'ready',
-		'response',
-		'announcer',
 		'stream'
 	],
 	#category : #'Agda-agda'
 }
-
-{ #category : #accessing }
-AgdaMode >> getResp [
-	| par continue rem |
-	ready
-		ifFalse: [
-			rem := ''.
-			out
-				pollStringWhileTrue: 20 milliseconds
-				do: [ :aString | 
-					rem := rem , aString.
-					continue := true.
-					[ continue ]
-						whileTrue: [ par := self parseResp: rem.
-							rem := par at: 2.
-							(par at: 1) = ''
-								ifTrue: [ continue := false ]
-								ifFalse: [ response add: (par at: 1).
-									self announcer announce: NewResponse new ] ].
-					(aString findString: 'JSON>')
-						in: [ :index | 
-							index > 0
-								ifTrue: [ ready := true.
-									false ]
-								ifFalse: [ true ] ] ] ]
-]
 
 { #category : #accessing }
 AgdaMode >> gtJSONDataFor: aView context: aContext [
@@ -66,8 +37,6 @@ AgdaMode >> gtJSONDataFor: aView context: aContext [
 			(aNode value isCollection and: [ aNode value isString not ])
 				ifTrue: [ GtTreeNode fromNode: aNode ]
 				ifFalse: [ #() ] ];
-		updateWhen: NewResponse in: self announcer;
-		actionUpdateButton;
 		column: 'Index'
 			text: [ :aNode :anIndex | anIndexStyler cull: aNode cull: anIndex ];
 		column: 'Item'
@@ -95,15 +64,11 @@ AgdaMode >> gtJSONDataFor: aView context: aContext [
 { #category : #accessing }
 AgdaMode >> gtJSONFor: aView [
 	<gtView>
-
-	^ aView textEditor
+	^ aView list
 		title: 'JSON';
 		priority: 4;
-		text: [ '[' , response asCommaString , ']' ];
-		styler: JSONParser gtStyler;
-		aptitude: BrGlamorousCodeEditorAptitude;
-		updateWhen: NewResponse in: self announcer;
-		actionUpdateButton.
+		items: (BrStreamItemsProvider forStream: stream asyncSimilarCopy);
+		itemDataBinder: [ :anElement :anItem | anElement text: anItem ]	"(OrderedCollection new add: 'hi'; add: 'ho'; yourself);"
 ]
 
 { #category : #accessing }
@@ -118,8 +83,7 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
-	ready := false.
-	stream := AgdaStream stream: (IOAsyncStream process: agda buff: out).
+	stream := IOAsyncStream process: agda buff: out.
 ]
 
 { #category : #accessing }
@@ -172,17 +136,7 @@ AgdaMode >> parseResp: aResp [
 
 { #category : #accessing }
 AgdaMode >> query: aQuery [
-	ready
-		ifTrue: [ ready := false.
-			response := response removeAll.
-			input
-				nextPutAll: aQuery asString;
-				lf.
-			 ^ true]
-		ifFalse: [ ^ false ]
-]
-
-{ #category : #accessing }
-AgdaMode >> response [
-^ response
+	input
+		nextPutAll: aQuery asString;
+		lf
 ]
