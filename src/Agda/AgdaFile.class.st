@@ -213,7 +213,6 @@ AgdaFile >> initialize: aPath [
 	announcer := Announcer new.
 	agda := agdaC.
 	info := 'hi there' asRopedText glamorousCodeFont.
-	response := agda response.
 	respPos := 0.
 	path := aPath.
 	file := path asFileReference.

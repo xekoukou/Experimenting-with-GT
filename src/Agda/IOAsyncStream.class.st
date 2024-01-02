@@ -5,7 +5,8 @@ Class {
 	#classTraits : 'TAsyncStream classTrait',
 	#instVars : [
 		'asyncBuffer',
-		'childProcess'
+		'childProcess',
+		'waker'
 	],
 	#category : #'Agda-agda'
 }
@@ -13,6 +14,12 @@ Class {
 { #category : #accessing }
 IOAsyncStream class >> process: aChildProcess buff: aBuffer [
 	^ self new process: aChildProcess buff: aBuffer
+]
+
+{ #category : #accessing }
+IOAsyncStream >> initialize [
+	super initialize.
+	waker := AsyncFutureExecutionAtomicWaker new
 ]
 
 { #category : #'api - stream' }
@@ -25,11 +32,12 @@ IOAsyncStream >> pollNext: anAsynchronousContext [
 
 	<return: #AsyncPoll>
 	| string |
+	waker register: anAsynchronousContext waker.
 	string := asyncBuffer pollString.
 	string
 		ifEmpty: [ childProcess isTerminated
-				ifTrue: [ AsyncPoll ready: (AsyncOptionalValue none). ]
-				ifFalse: [ ^ AsyncPoll pending ] ]
+				ifTrue: [ AsyncPoll ready: AsyncOptionalValue none ]
+				ifFalse: [ [ 10 milliSeconds wait. waker wakeUp ] asAsyncFuture await . ^ AsyncPoll pending ] ]
 		ifNotEmpty: [ :aString | ^ AsyncPoll ready: (AsyncOptionalValue some: aString) ]
 ]
 

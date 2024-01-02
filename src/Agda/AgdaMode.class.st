@@ -6,7 +6,9 @@ Class {
 		'out',
 		'err',
 		'input',
-		'stream'
+		'stream',
+		'jsonStream',
+		'io'
 	],
 	#category : #'Agda-agda'
 }
@@ -83,7 +85,8 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
-	stream := IOAsyncStream process: agda buff: out.
+	io := IOAsyncStream process: agda buff: out.
+	stream := AgdaStream stream: io.
 ]
 
 { #category : #accessing }
