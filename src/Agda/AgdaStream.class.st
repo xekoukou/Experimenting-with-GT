@@ -7,7 +7,8 @@ Class {
 		'out',
 		'stream',
 		'rem',
-		'previous'
+		'previous',
+		'waker'
 	],
 	#category : #'Agda-agda'
 }
@@ -22,6 +23,7 @@ AgdaStream >> initialize [
 super initialize.
 rem := ''.
 previous := LinkedList new.
+waker := AsyncFutureExecutionAtomicWaker new.
 ]
 
 { #category : #accessing }
@@ -71,6 +73,9 @@ AgdaStream >> pollNext: anAsynchronousContext [
 	 - Poll::Ready(None) means that the stream has terminated, and poll_next should not be invoked again."
 
 	<return: #AsyncPoll>
+	
+	waker register: anAsynchronousContext waker.
+	
 	previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
 
 	(rem findString: 'JSON>')
@@ -79,7 +84,7 @@ AgdaStream >> pollNext: anAsynchronousContext [
 				ifTrue: [ rem := ''.
 					AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
 
-	(stream pollNext: anAsynchronousContext)
+	(stream pollNext: (AsyncFutureExecutionContext new waker: waker) )
 		ifReady: [ :aReadyPoll | 
 			| continue par |
 			aReadyPoll value

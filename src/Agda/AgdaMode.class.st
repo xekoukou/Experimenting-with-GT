@@ -7,7 +7,6 @@ Class {
 		'err',
 		'input',
 		'stream',
-		'jsonStream',
 		'io'
 	],
 	#category : #'Agda-agda'
@@ -69,8 +68,8 @@ AgdaMode >> gtJSONFor: aView [
 	^ aView list
 		title: 'JSON';
 		priority: 4;
-		items: (BrStreamItemsProvider forStream: stream asyncSimilarCopy);
-		itemDataBinder: [ :anElement :anItem | anElement text: anItem ]	"(OrderedCollection new add: 'hi'; add: 'ho'; yourself);"
+		items: (BrStreamItemsProvider forStream: '');
+		itemDataBinder: [ :anElement :anItem | anElement text: anItem ]
 ]
 
 { #category : #accessing }

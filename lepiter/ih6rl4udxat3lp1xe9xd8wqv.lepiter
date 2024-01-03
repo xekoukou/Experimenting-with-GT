@@ -386,6 +386,210 @@
 					"uidString" : "EyGTfV/IDQCECnzyCWJcqw=="
 				},
 				"code" : "IOAsyncStream new"
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:34:13.164832+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:34:38.146315+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "SG2NJ5TJDQC1eMA0CpjqfA=="
+				},
+				"code" : "agda := (GtExternalProcessBuilder new: 'agda')\r\t\targ: '--interaction-json';\r\t\tpipeStdin;\r\t\tpipeStdout;\r\t\tpipeStderr;\r\t\tspawn.\rinput := agda stdin.\rout := agda asynchronousStdout.\rerr := agda asynchronousStderr"
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:35:22.391034+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:35:27.205872+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "EcStK5TJDQC1gdJKCpjqfA=="
+				},
+				"code" : "io := IOAsyncStream process: agda buff: out"
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-03T11:39:26.905281+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-03T11:39:58.084327+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "7GW9IGnKDQCxCeUtD8S4WA=="
+				},
+				"code" : "agdaStream := AgdaStream stream: io."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-03T11:42:32.846057+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-03T11:43:23.066889+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "fJvSK2nKDQCyTbYYD8S4WA=="
+				},
+				"code" : "agdaStream next asAsyncPromise."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:38:21.338687+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-03T11:41:57.247748+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "JDhYNpTJDQC2TLoGCpjqfA=="
+				},
+				"code" : "BrSimpleList new\r\t\tmatchParent;\r\t\titemStencil: [ BrLabel new hMatchParent beSmallSize aptitude: BrGlamorousLabelAptitude ];\r\t\titemDataBinder: [ :anItemElement :anItem | anItemElement text: anItem ];\r\t\titemsProvider: (BrStreamItemsProvider new stream: agdaStream; preloadAmount: 1)."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-12-23T21:36:00.387999+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-02T17:12:22.034969+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "zIPxLZTJDQC1irv8CpjqfA=="
+				},
+				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'.\rquery := AgdaQuery new load: path2.\rinput nextPutAll: (query asString); lf."
 			}
 		]
 	},
