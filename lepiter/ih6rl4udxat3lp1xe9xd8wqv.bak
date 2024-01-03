@@ -66,7 +66,7 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-14T10:19:18.503381+02:00"
+						"dateAndTimeString" : "2024-01-03T19:19:32.351618+02:00"
 					}
 				},
 				"uid" : {
@@ -514,14 +514,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-03T11:43:20.982306+02:00"
+						"dateAndTimeString" : "2024-01-03T17:53:27.508961+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "fJvSK2nKDQCyTbYYD8S4WA=="
 				},
-				"code" : "agdaStream next asAs."
+				"code" : "(agdaStream next map: [:anItem | STONJSON fromString: anItem]) asAsyncPromise."
 			},
 			{
 				"__type" : "pharoSnippet",

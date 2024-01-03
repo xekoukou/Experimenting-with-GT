@@ -2,130 +2,39 @@ Class {
 	#name : #AgdaFile,
 	#superclass : #Object,
 	#instVars : [
-		'path',
-		'file',
-		'savedText',
 		'agda',
-		'response',
-		'respPos',
-		'announcer',
-		'info'
-	],
-	#classVars : [
-		'agdaC'
+		'path',
+		'editorAnnouncer',
+		'monitor'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaFile class >> path: aPath [
-agdaC ifNotNil: [agdaC isTerminated ifTrue: [agdaC := AgdaMode new.]] ifNil: [agdaC := AgdaMode new.].
-^ self new initialize: aPath.
+AgdaFile class >> agda: anAgda path: aPath [
+^ self new agda: anAgda path: aPath.
 ]
 
 { #category : #accessing }
-AgdaFile >> agda [
-^ agda
+AgdaFile >> agda: anAgda path: aPath [
+	agda := anAgda.
+	path := aPath.
+	monitor := Monitor new.
+	editorAnnouncer := Announcer new.
+	monitor
+		critical: [ agda announcer
+				when: NewResponse
+				send: #handleResponse:
+				to: self ].
 ]
 
 { #category : #accessing }
-AgdaFile >> announcer [
-^ announcer
-]
-
-{ #category : #accessing }
-AgdaFile >> changeBlock [
-	^ [:editorPane :editor | editorPane
-			childNamed: #modificationBar
-			ifFound: [ :elmt | 
-				elmt
-					inUIProcessDo: [ elmt
-							background: ((editor editor text equalsIgnoringAttributes: savedText)
-									ifTrue: [ Color transparent ]
-									ifFalse: [ elmt theme status changesBackgroundColor ]) ] ] ].
-]
-
-{ #category : #accessing }
-AgdaFile >> gtContentsFor: aView [
-	<gtView>
-	
-	| eventLoop |
-	file isFile ifFalse: [ ^ aView empty ].
-	[ file readStreamDo: [ :s | s next: 1000 ] ]
-		on: ZnInvalidUTF8
-		do: [ ^ aView empty ].
-
-	eventLoop := file watcher startLoop.
-
-	^ aView explicit
-		title: 'Contents' translated;
-		priority: 3;
-		updateWhen: GtFileWatcherModificationAnnouncement in: eventLoop announcer;
-		stencil: [ self gtEditorView ]
-]
-
-{ #category : #accessing }
-AgdaFile >> gtEditorView [
-	| pane editorPane editor toolbar |
-	pane := BrVerticalPane new matchParent.
-	editorPane := BrHorizontalPane new matchParent.
-	editorPane padding: (BlInsets all: 5).
-	editor := (AgdaEditor new: self) matchParent.
-	editorPane
-		addChild: (BlElement new
-					width: 5;
-					constraintsDo: [ :c | c vertical matchParent ];
-					yourself)
-			as: #modificationBar;
-		addChild: editor as: #editor.
-	
-
-
-	toolbar := BrToolbar new
-			aptitude: (BrGlamorousToolbarAptitude new spacing: 5);
-			fitContent;
-			margin: (BlInsets bottom: 5).
-	toolbar
-		addChild: (BrButton new
-				aptitude: BrGlamorousButtonWithIconAptitude;
-				beSmallSize;
-				icon: BrGlamorousVectorIcons accept;
-				label: 'Save';
-				action: [ self saveBlock value: editorPane value: editor])
-		as: #saveButton.
-	toolbar
-		addChild: (BrButton new
-				aptitude: BrGlamorousButtonWithIconAptitude;
-				beSmallSize;
-				icon: BrGlamorousVectorIcons cancel;
-				label: 'Cancel';
-				action: [ editor editor text: savedText glamorousCodeFont.
-					self changeBlock value: editorPane value: editor. ])
-		as: #cancelButton.
-	pane addChild: editorPane.
-	pane addChild: toolbar as: #toolbar.
-	^ pane
-]
-
-{ #category : #accessing }
-AgdaFile >> gtJSONDataFor: aView context: aContext [
-	<gtView>
-	^ aView forward
-		title: 'JSON DATA';
-		priority: 5;
-		object: [ agda ];
-		view: #gtJSONDataFor:context:
-]
-
-{ #category : #accessing }
-AgdaFile >> handleResponse [
+AgdaFile >> handleResponse: aNewResponse [
 	| data |
-	[ respPos < response size ]
-		whileTrue: [ respPos := respPos + 1.
-			data := STONJSON fromString: (response at: respPos).
-			(data at: 'kind') = 'HighlightingInfo'
-				ifTrue: [ self highlight: (data at: 'info' at: 'payload').
-					announcer announce: NewHighLight new ] ]
+	data := aNewResponse value.
+	self inform: 'ho'.
+	(data at: 'kind') = 'HighlightingInfo'
+		ifTrue: [  "self highlight: (data at: 'info' at: 'payload')." ]
 ]
 
 { #category : #accessing }
@@ -200,46 +109,4 @@ AgdaFile >> highlight: anArray [
 						ifTrue: [ text background: Color yellow muchDarker.
 							missing := false ].
 					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ]
-]
-
-{ #category : #accessing }
-AgdaFile >> info [
-^ info.
-]
-
-{ #category : #accessing }
-AgdaFile >> initialize: aPath [
-	super initialize.
-	announcer := Announcer new.
-	agda := agdaC.
-	info := 'hi there' asRopedText glamorousCodeFont.
-	respPos := 0.
-	path := aPath.
-	file := path asFileReference.
-	savedText := BlRunRopedText file: file.
-	agda announcer when: NewResponse send: #handleResponse to: self.
-]
-
-{ #category : #accessing }
-AgdaFile >> path [
-^ path
-]
-
-{ #category : #accessing }
-AgdaFile >> query: aQuery [
-	(agda query: aQuery)
-		ifTrue: [ respPos := 0.
-			agda getResp ]
-]
-
-{ #category : #accessing }
-AgdaFile >> saveBlock [
-	^ [:editorPane :editor | file gtSaveContents: editor text asString.
-		savedText := BlRunRopedText file: file.
-		self changeBlock value: editorPane value: editor ].
-]
-
-{ #category : #accessing }
-AgdaFile >> savedText [
-^ savedText
 ]

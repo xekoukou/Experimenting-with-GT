@@ -16,6 +16,11 @@ Class {
 }
 
 { #category : #accessing }
+AgdaMode >> announcer [
+^ announcer.
+]
+
+{ #category : #accessing }
 AgdaMode >> initialize [
 	super initialize.
 
@@ -34,7 +39,7 @@ AgdaMode >> initialize [
 
 	io := IOAsyncStream process: agda buff: out.
 	agdaStream := AgdaStream stream: io.
-	"self receiveResponse"
+	self receiveResponse.
 ]
 
 { #category : #accessing }
@@ -48,8 +53,14 @@ AgdaMode >> query: aQuery [
 
 { #category : #accessing }
 AgdaMode >> receiveResponse [
-	[ [ (agdaStream next
+	(agdaStream next
 		map: [ :anItem | 
-			STONJSON fromString: anItem.
-			self inform: 'hi' ]) wait ] repeat ] asAsyncFuture await.
+			| obj |
+			self inform: anItem.
+			obj := STONJSON fromString: anItem.
+			(obj includesKey: 'AgdaMode')
+				ifTrue: [ ((obj at: 'msg') includesKey: 'ready')
+						ifTrue: [ monitor critical: [ ready := true ] ] ]
+				ifFalse: [ monitor critical: [ announcer announce: (NewResponse with: obj) ] ] ])
+		asAsyncPromise asyncThen: [ :n | self receiveResponse ]
 ]
