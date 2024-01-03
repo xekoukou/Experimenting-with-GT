@@ -73,18 +73,17 @@ AgdaStream >> pollNext: anAsynchronousContext [
 	 - Poll::Ready(None) means that the stream has terminated, and poll_next should not be invoked again."
 
 	<return: #AsyncPoll>
-	
 	waker register: anAsynchronousContext waker.
-	
+
 	previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
 
 	(rem findString: 'JSON>')
 		in: [ :index | 
 			index > 0
 				ifTrue: [ rem := ''.
-					AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
+					^ AsyncPoll ready: '{"AgdaMode" : true , "msg" : {"ready" : true} }' ] ].
 
-	(stream pollNext: (AsyncFutureExecutionContext new waker: waker) )
+	(stream pollNext: anAsynchronousContext)
 		ifReady: [ :aReadyPoll | 
 			| continue par |
 			aReadyPoll value
@@ -99,10 +98,12 @@ AgdaStream >> pollNext: anAsynchronousContext [
 								ifFalse: [ previous add: (par at: 1) ] ].
 
 
-					previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ].
-					^ AsyncPoll pending ]
-				ifNone: [ ^ aReadyPoll ] ]
-		ifPending: [ :aPendingPoll | aPendingPoll ]
+					previous size > 0 ifTrue: [ ^ AsyncPoll ready: previous removeFirst ] ]
+				ifNone: [ ^ aReadyPoll ] ].
+
+	[ 20 milliSeconds wait.
+	waker wakeUp ] asAsyncFuture await.
+	^ AsyncPoll pending.
 ]
 
 { #category : #accessing }
