@@ -5,7 +5,6 @@ Class {
 	#classTraits : 'TAsyncStream classTrait',
 	#instVars : [
 		'out',
-		'stream',
 		'rem',
 		'previous',
 		'waker'
