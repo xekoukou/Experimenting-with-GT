@@ -6,19 +6,11 @@ Class {
 		'out',
 		'err',
 		'input',
-		'io',
 		'ready',
-		'monitor',
-		'announcer',
-		'rem'
+		'announcer'
 	],
 	#category : #'Agda-agda'
 }
-
-{ #category : #accessing }
-AgdaMode >> announcer [
-^ announcer.
-]
 
 { #category : #accessing }
 AgdaMode >> initialize [
@@ -33,12 +25,7 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
-	monitor := Monitor new.
-	monitor critical: [ ready := true. ].
-	announcer := Announcer new.
-
-	io := IOAsyncStream process: agda buff: out.
-	self receiveResponse.
+	ready := true.
 ]
 
 { #category : #accessing }
@@ -81,30 +68,59 @@ AgdaMode >> parseResp: aResp [
 
 { #category : #accessing }
 AgdaMode >> query: aQuery [
+	| aString continue1 continue2 rem par |
 	ready
-		ifTrue: [ input
+		ifTrue: [ ready := false.
+			input
 				nextPutAll: aQuery asString;
 				lf.
-			monitor critical: [ ready := false ]. ].
+
+			continue1 := true.
+			rem := ''.
+			[ [ continue1 ]
+				whileTrue: [ aString := out pollString.
+					aString
+						ifNotEmpty: [
+							rem := rem , aString.
+							continue2 := true.
+							[ continue2 ]
+								whileTrue: [ par := self parseResp: rem.
+									rem := par at: 2.
+									(par at: 1) = ''
+										ifTrue: [ continue2 := false ]
+										ifFalse: [ self inform: (par at: 1).
+											announcer announce: (NewResponse with: (par at: 1)) ] ] ].
+
+					(rem findString: 'JSON>')
+						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
+			ready := true ] asAsyncFuture await ]
 ]
 
 { #category : #accessing }
-AgdaMode >> receiveResponse [
-	[ (io next
-		map: [ :aString | 
-			self inform: aString]) wait ] asAsyncFuture await
-]
+AgdaMode >> query: aQuery for: anAgdaFile [
+	| aString continue1 continue2 rem par |
+	ready
+		ifTrue: [ ready := false.
+			input
+				nextPutAll: aQuery asString;
+				lf.
 
-{ #category : #accessing }
-AgdaMode >> receiveResponse2 [
-	(agdaStream next
-		map: [ :anItem | 
-			| obj |
-			self inform: anItem.
-			obj := STONJSON fromString: anItem.
-			(obj includesKey: 'AgdaMode')
-				ifTrue: [ ((obj at: 'msg') includesKey: 'ready')
-						ifTrue: [ monitor critical: [ ready := true ] ] ]
-				ifFalse: [ monitor critical: [ announcer announce: (NewResponse with: obj) ] ] ])
-		asAsyncPromise asyncThen: [ :n | self receiveResponse ]
+			continue1 := true.
+			rem := ''.
+			[ [ continue1 ]
+				whileTrue: [ aString := out pollString.
+					aString
+						ifNotEmpty: [ rem := rem , aString.
+							continue2 := true.
+							[ continue2 ]
+								whileTrue: [ par := self parseResp: rem.
+									rem := par at: 2.
+									(par at: 1) = ''
+										ifTrue: [ continue2 := false ]
+										ifFalse: [ self inform: (par at: 1).
+											anAgdaFile handleResponse: (par at: 1) ] ] ].
+
+					(rem findString: 'JSON>')
+						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
+			ready := true ] asAsyncFuture await ]
 ]

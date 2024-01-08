@@ -5,7 +5,7 @@ Class {
 		'agda',
 		'path',
 		'editorAnnouncer',
-		'monitor'
+		'savedText'
 	],
 	#category : #'Agda-agda'
 }
@@ -19,22 +19,17 @@ AgdaFile class >> agda: anAgda path: aPath [
 AgdaFile >> agda: anAgda path: aPath [
 	agda := anAgda.
 	path := aPath.
-	monitor := Monitor new.
 	editorAnnouncer := Announcer new.
-	monitor
-		critical: [ agda announcer
-				when: NewResponse
-				send: #handleResponse:
-				to: self ].
+	savedText := BlRunRopedText file: (path asFileReference).
 ]
 
 { #category : #accessing }
 AgdaFile >> handleResponse: aNewResponse [
 	| data |
-	data := aNewResponse value.
+	data := aNewResponse.
 	self inform: 'ho'.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [  "self highlight: (data at: 'info' at: 'payload')." ]
+		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ]
 ]
 
 { #category : #accessing }
