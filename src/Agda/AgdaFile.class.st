@@ -35,6 +35,7 @@ AgdaFile >> announcer [
 AgdaFile >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.
+	self inform: 'inside handleResponse.'.
 	(data at: 'kind') = 'HighlightingInfo'
 		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ]
 ]
@@ -42,6 +43,7 @@ AgdaFile >> handleResponse: aNewResponse [
 { #category : #accessing }
 AgdaFile >> highlight: anArray [
 	savedText unstyle.
+	self inform: 'Inside highlight.'.
 	anArray
 		do: [ :info | 
 			| text range type atoms comp missing |
@@ -112,7 +114,7 @@ AgdaFile >> highlight: anArray [
 						ifTrue: [ text background: Color yellow muchDarker.
 							missing := false ].
 					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ].
-	announcer announce: NewHighLight new
+	self inform: 'Inside highlight.'
 ]
 
 { #category : #accessing }
@@ -136,5 +138,5 @@ AgdaFile >> save: newContents [
 
 { #category : #accessing }
 AgdaFile >> savedText [
-^savedText.
+^ savedText.
 ]

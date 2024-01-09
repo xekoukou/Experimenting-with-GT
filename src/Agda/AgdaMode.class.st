@@ -68,16 +68,16 @@ AgdaMode >> parseResp: aResp [
 
 { #category : #accessing }
 AgdaMode >> query: aQuery for: anAgdaFile [
-	| aString continue1 continue2 rem par |
 	ready
 		ifTrue: [ ready := false.
 			input
 				nextPutAll: aQuery asString;
 				lf.
-
+			^ [ | aString continue1 continue2 rem par |
 			continue1 := true.
 			rem := ''.
-			^ [ [ continue1 ]
+			self inform: 'inside agda query.'.
+			[ continue1 ]
 				whileTrue: [ aString := out pollString.
 					aString
 						ifNotEmpty: [ rem := rem , aString.
@@ -87,7 +87,8 @@ AgdaMode >> query: aQuery for: anAgdaFile [
 									rem := par at: 2.
 									(par at: 1) = ''
 										ifTrue: [ continue2 := false ]
-										ifFalse: [ anAgdaFile handleResponse: (STONJSON fromString: (par at: 1)) ] ] ].
+										ifFalse: [ self inform: (par at: 1).
+											anAgdaFile handleResponse: (STONJSON fromString: (par at: 1)) ] ] ].
 
 					(rem findString: 'JSON>')
 						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
