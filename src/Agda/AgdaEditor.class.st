@@ -51,5 +51,5 @@ AgdaEditor >> for: anAgdaFile [
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical matchParent ].
-	self handleEvents.
+	self editorShortCuts.
 ]
