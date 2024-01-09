@@ -67,36 +67,6 @@ AgdaMode >> parseResp: aResp [
 ]
 
 { #category : #accessing }
-AgdaMode >> query: aQuery [
-	| aString continue1 continue2 rem par |
-	ready
-		ifTrue: [ ready := false.
-			input
-				nextPutAll: aQuery asString;
-				lf.
-
-			continue1 := true.
-			rem := ''.
-			[ [ continue1 ]
-				whileTrue: [ aString := out pollString.
-					aString
-						ifNotEmpty: [
-							rem := rem , aString.
-							continue2 := true.
-							[ continue2 ]
-								whileTrue: [ par := self parseResp: rem.
-									rem := par at: 2.
-									(par at: 1) = ''
-										ifTrue: [ continue2 := false ]
-										ifFalse: [ self inform: (par at: 1).
-											announcer announce: (NewResponse with: (par at: 1)) ] ] ].
-
-					(rem findString: 'JSON>')
-						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
-			ready := true ] asAsyncFuture await ]
-]
-
-{ #category : #accessing }
 AgdaMode >> query: aQuery for: anAgdaFile [
 	| aString continue1 continue2 rem par |
 	ready
@@ -107,7 +77,7 @@ AgdaMode >> query: aQuery for: anAgdaFile [
 
 			continue1 := true.
 			rem := ''.
-			[ [ continue1 ]
+			^ [ [ continue1 ]
 				whileTrue: [ aString := out pollString.
 					aString
 						ifNotEmpty: [ rem := rem , aString.
@@ -117,10 +87,10 @@ AgdaMode >> query: aQuery for: anAgdaFile [
 									rem := par at: 2.
 									(par at: 1) = ''
 										ifTrue: [ continue2 := false ]
-										ifFalse: [ self inform: (par at: 1).
-											anAgdaFile handleResponse: (par at: 1) ] ] ].
+										ifFalse: [ anAgdaFile handleResponse: (STONJSON fromString: (par at: 1)) ] ] ].
 
 					(rem findString: 'JSON>')
 						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
-			ready := true ] asAsyncFuture await ]
+			ready := true ] asAsyncFuture ]
+		ifFalse: [ ^ [  ] asAsyncFuture ]
 ]

@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'agda',
 		'path',
-		'editorAnnouncer',
-		'savedText'
+		'savedText',
+		'file',
+		'announcer'
 	],
 	#category : #'Agda-agda'
 }
@@ -19,15 +20,21 @@ AgdaFile class >> agda: anAgda path: aPath [
 AgdaFile >> agda: anAgda path: aPath [
 	agda := anAgda.
 	path := aPath.
-	editorAnnouncer := Announcer new.
-	savedText := BlRunRopedText file: (path asFileReference).
+	file := path asFileReference.
+	announcer := Announcer new.
+	savedText := BlRunRopedText file: file.
+	savedText fontName: 'mononoki'.
+]
+
+{ #category : #accessing }
+AgdaFile >> announcer [
+^ announcer.
 ]
 
 { #category : #accessing }
 AgdaFile >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.
-	self inform: 'ho'.
 	(data at: 'kind') = 'HighlightingInfo'
 		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ]
 ]
@@ -48,6 +55,7 @@ AgdaFile >> highlight: anArray [
 
 					type = 'markup'
 						ifTrue: [ text foreground: Color red muchDarker.
+							self inform: 'markup'.
 							missing := false ].
 					type = 'symbol'
 						ifTrue: [ text foreground: Color black.
@@ -103,5 +111,30 @@ AgdaFile >> highlight: anArray [
 					type = 'error'
 						ifTrue: [ text background: Color yellow muchDarker.
 							missing := false ].
-					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ]
+					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ].
+	announcer announce: NewHighLight new
+]
+
+{ #category : #accessing }
+AgdaFile >> load [
+	^ self query: (AgdaQuery new load: path)
+]
+
+{ #category : #accessing }
+AgdaFile >> query: aQuery [
+	^ agda query: aQuery for: self
+]
+
+{ #category : #accessing }
+AgdaFile >> save: newContents [
+	(file fullName , '.backup') asFileReference ensureDelete.
+	file copyTo: (file fullName , '.backup') asFileReference.
+	^ file
+		ensureDelete;
+		writeStreamDo: [ :s | s nextPutAll: newContents ]
+]
+
+{ #category : #accessing }
+AgdaFile >> savedText [
+^savedText.
 ]

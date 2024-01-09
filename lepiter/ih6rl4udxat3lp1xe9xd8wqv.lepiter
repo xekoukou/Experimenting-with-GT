@@ -344,14 +344,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-12-04T15:41:42.557155+02:00"
+						"dateAndTimeString" : "2024-01-08T19:23:35.194302+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "f/s32RDIDQCvsN7dA0cRXg=="
 				},
-				"code" : "AgdaEditor new."
+				"code" : "AgdaEditor for: agdaFile."
 			},
 			{
 				"__type" : "pharoSnippet",

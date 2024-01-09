@@ -265,40 +265,6 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-13T23:24:55.090915+02:00"
-					}
-				},
-				"editEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"editTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-11-14T09:29:48.481835+02:00"
-					}
-				},
-				"uid" : {
-					"__type" : "uid",
-					"uidString" : "oS7KCXHGDQCgDwUvDQJRqw=="
-				},
-				"code" : "agda query: query."
-			},
-			{
-				"__type" : "pharoSnippet",
-				"children" : {
-					"__type" : "snippets",
-					"items" : [ ]
-				},
-				"createEmail" : {
-					"__type" : "email",
-					"emailString" : "<unknown>"
-				},
-				"createTime" : {
-					"__type" : "time",
-					"time" : {
-						"__type" : "dateAndTime",
 						"dateAndTimeString" : "2023-11-21T21:36:28.669333+02:00"
 					}
 				},
@@ -333,6 +299,40 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2023-11-13T23:24:55.090915+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-08T18:42:53.328748+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "oS7KCXHGDQCgDwUvDQJRqw=="
+				},
+				"code" : "agda query: query for: agdaFile."
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
 						"dateAndTimeString" : "2023-12-04T15:29:46.602068+02:00"
 					}
 				},
@@ -344,14 +344,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2023-12-04T15:41:42.557155+02:00"
+						"dateAndTimeString" : "2024-01-08T19:23:34.269275+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "f/s32RDIDQCvsN7dA0cRXg=="
 				},
-				"code" : "AgdaEditor new."
+				"code" : "AgdaEditor for: agdaFile"
 			},
 			{
 				"__type" : "pharoSnippet",

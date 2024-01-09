@@ -1,64 +1,55 @@
 Class {
 	#name : #AgdaEditor,
-	#superclass : #BrEditor,
+	#superclass : #BlElement,
 	#instVars : [
 		'agdaF',
-		'saveSC',
-		'loadSC'
+		'editor'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaEditor class >> new: anAgdaFile [
+AgdaEditor class >> for: anAgdaFile [
     
-	^ self new initialize:anAgdaFile
+	^ self new for:anAgdaFile
 ]
 
 { #category : #accessing }
-AgdaEditor >> handleEvents [
-	self editor
-		when: BrTextEditorInsertedEvent
-			do: [ agdaF changeBlock value: self parent value: self ];
-		when: BrTextEditorDeletedEvent
-			do: [ agdaF changeBlock value: self parent value: self ];
-		when: BlInfiniteDataSourceChanged
-			do: [ agdaF changeBlock value: self parent value: self ].
-	agdaF announcer
-		when: NewHighLight
-		do: [ self updateText.
-			self addShortcut: loadSC ]
+AgdaEditor >> editor [
+	editor := BrEditor new.
+	editor
+		aptitude: BrEditorAptitude new;
+		text: agdaF savedText;
+		background: Color white;
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical matchParent ].
+
+	^ editor
 ]
 
 { #category : #accessing }
-AgdaEditor >> initialize: anAgdaFile [ 
-super initialize.
-agdaF := anAgdaFile.
-self editor text: (agdaF savedText) glamorousCodeFont.
-self handleEvents.
-self shortcuts.
+AgdaEditor >> editorShortCuts [
+	| load |
+	load := BlShortcutWithAction new
+			combination: BlKeyCombination primaryL;
+			action: [ self
+					withAsyncFutureDo: [ :aFutureElement | 
+						aFutureElement
+							whenSuccess: [ :currentEditor | currentEditor text: agdaF savedText ].
+						aFutureElement future: agdaF load ] ].
+	editor addShortcut: load
 ]
 
 { #category : #accessing }
-AgdaEditor >> shortcuts [
-	saveSC := BlShortcutWithAction new
-			combination: BlKeyCombination primaryS;
-			action: [ agdaF saveBlock value: self parent value: self ].
-	loadSC := BlShortcutWithAction new
-			combination: BlKeyCombination primaryC;
-			action: [ | query |
-				agdaF saveBlock value: self parent value: self.
-				query := AgdaQuery new load: agdaF path.
-				agdaF query: query.
-				self removeShortcut: loadSC ].
-
-	self addShortcut: saveSC.
-	self addShortcut: loadSC
-]
-
-{ #category : #accessing }
-AgdaEditor >> updateText [
+AgdaEditor >> for: anAgdaFile [
+	super initialize.
+	agdaF := anAgdaFile.
+	self editor.
+	self addChild: editor .
 	self
-		inUIProcessDo: [ self editor text: agdaF savedText glamorousCodeFont.
-			agdaF changeBlock value: self parent value: self ]
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical matchParent ].
+	self handleEvents.
 ]
