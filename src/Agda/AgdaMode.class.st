@@ -14,6 +14,7 @@ Class {
 
 { #category : #accessing }
 AgdaMode >> initialize [
+	| v |
 	super initialize.
 
 	agda := (GtExternalProcessBuilder new: 'agda')
@@ -25,6 +26,11 @@ AgdaMode >> initialize [
 	input := agda stdin.
 	out := agda asynchronousStdout.
 	err := agda asynchronousStderr.
+	ready := false.
+	100 milliSeconds wait.
+	v := out pollString.
+	
+	self assert: [ v = 'JSON> ' ].
 	ready := true.
 ]
 
@@ -67,6 +73,77 @@ AgdaMode >> parseResp: aResp [
 ]
 
 { #category : #accessing }
+AgdaMode >> query2: aQuery [
+	ready
+		ifTrue: [ ready := false.
+			input
+				nextPutAll: aQuery asString;
+				lf.
+			^ [ | aString continue1 continue2 rem par |
+			continue1 := true.
+			rem := ''.
+			self inform: 'inside agda query.'.
+			[ continue1 ]
+				whileTrue: [ aString := out pollString.
+					aString
+						ifNotEmpty: [ rem := rem , aString.
+							continue2 := true.
+							[ continue2 ]
+								whileTrue: [ par := self parseResp: rem.
+									rem := par at: 2.
+									(par at: 1) = ''
+										ifTrue: [ continue2 := false ]
+										ifFalse: [ self inform: (par at: 1).
+											 (STONJSON fromString: (par at: 1)) ] ] ].
+
+					(rem findString: 'JSON>')
+						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
+			ready := true ] asAsyncFuture ]
+		ifFalse: [ ^ [  ] asAsyncFuture ]
+]
+
+{ #category : #accessing }
+AgdaMode >> query2: aQuery for: anAgdaFile [
+	ready
+		ifTrue: [ ready := false.
+			input
+				nextPutAll: aQuery asString;
+				lf.
+			^ [ | aString continue1 continue2 rem par |
+			continue1 := true.
+			rem := ''.
+			self inform: 'inside agda query.'.
+			[ continue1 ]
+				whileTrue: [ aString := out pollString.
+					aString
+						ifNotEmpty: [ rem := rem , aString.
+							continue2 := true.
+							[ continue2 ]
+								whileTrue: [ par := self parseResp: rem.
+									rem := par at: 2.
+									(par at: 1) = ''
+										ifTrue: [ continue2 := false ]
+										ifFalse: [ self inform: (par at: 1).
+											anAgdaFile handleResponse: (STONJSON fromString: (par at: 1)) ] ] ].
+
+					(rem findString: 'JSON>')
+						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
+			ready := true ] asAsyncFuture ]
+		ifFalse: [ ^ [  ] asAsyncFuture ]
+]
+
+{ #category : #accessing }
+AgdaMode >> query: aQuery [
+	ready
+		ifTrue: [ ready := false.
+			input
+				nextPutAll: aQuery asString;
+				lf.
+			^ [ self response: '' ] asAsyncFuture ]
+		ifFalse: [ ^ nil ]
+]
+
+{ #category : #accessing }
 AgdaMode >> query: aQuery for: anAgdaFile [
 	ready
 		ifTrue: [ ready := false.
@@ -94,4 +171,19 @@ AgdaMode >> query: aQuery for: anAgdaFile [
 						in: [ :index | index > 0 ifTrue: [ continue1 := false ] ] ].
 			ready := true ] asAsyncFuture ]
 		ifFalse: [ ^ [  ] asAsyncFuture ]
+]
+
+{ #category : #accessing }
+AgdaMode >> response: aRem [
+	| aString rem par |
+	rem := aRem.
+
+	[ par := self parseResp: rem.
+	(par at: 1) = ''
+		ifTrue: [ (rem findString: 'JSON>') in: [ :index | index > 0 ifTrue: [ ready := true. ^ nil ] ].
+			aString := out pollString.
+			rem := rem , aString ]
+		ifFalse: [ self inform: (par at: 1).
+			^ {STONJSON fromString: (par at: 1).
+				[self response: (par at: 2)] asAsyncFuture } ] ] repeat
 ]

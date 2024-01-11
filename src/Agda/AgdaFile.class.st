@@ -5,8 +5,7 @@ Class {
 		'agda',
 		'path',
 		'savedText',
-		'file',
-		'announcer'
+		'file'
 	],
 	#category : #'Agda-agda'
 }
@@ -21,21 +20,14 @@ AgdaFile >> agda: anAgda path: aPath [
 	agda := anAgda.
 	path := aPath.
 	file := path asFileReference.
-	announcer := Announcer new.
 	savedText := BlRunRopedText file: file.
 	savedText fontName: 'mononoki'.
-]
-
-{ #category : #accessing }
-AgdaFile >> announcer [
-^ announcer.
 ]
 
 { #category : #accessing }
 AgdaFile >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.
-	self inform: 'inside handleResponse.'.
 	(data at: 'kind') = 'HighlightingInfo'
 		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ]
 ]
@@ -124,7 +116,7 @@ AgdaFile >> load [
 
 { #category : #accessing }
 AgdaFile >> query: aQuery [
-	^ agda query: aQuery for: self
+	^ agda query: aQuery
 ]
 
 { #category : #accessing }
