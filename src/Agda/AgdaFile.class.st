@@ -25,17 +25,22 @@ AgdaFile >> agda: anAgda path: aPath [
 ]
 
 { #category : #accessing }
+AgdaFile >> displayInfo: anObject [ 
+]
+
+{ #category : #accessing }
 AgdaFile >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ]
+		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ].
+			(data at: 'kind') = 'DisplayInfo'
+		ifTrue: [ self displayInfo: (data at: 'info') ].
 ]
 
 { #category : #accessing }
 AgdaFile >> highlight: anArray [
 	savedText unstyle.
-	self inform: 'Inside highlight.'.
 	anArray
 		do: [ :info | 
 			| text range type atoms comp missing |
@@ -49,7 +54,6 @@ AgdaFile >> highlight: anArray [
 
 					type = 'markup'
 						ifTrue: [ text foreground: Color red muchDarker.
-							self inform: 'markup'.
 							missing := false ].
 					type = 'symbol'
 						ifTrue: [ text foreground: Color black.
@@ -106,7 +110,6 @@ AgdaFile >> highlight: anArray [
 						ifTrue: [ text background: Color yellow muchDarker.
 							missing := false ].
 					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ].
-	self inform: 'Inside highlight.'
 ]
 
 { #category : #accessing }
