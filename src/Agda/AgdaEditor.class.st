@@ -5,7 +5,6 @@ Class {
 		'agdaF',
 		'label',
 		'editor',
-		'savedText',
 		'vpane',
 		'info',
 		'numberOfChanges'
@@ -24,9 +23,9 @@ AgdaEditor >> editor [
 	editor := BrEditor new.
 	editor
 		aptitude: BrEditorAptitude new;
-		text: (savedText unstyle);
+		text: agdaF ropedText unstyle;
 		constraintsDo: [ :c | 
-			c horizontal matchParent.
+			c horizontal fitContent.
 			c vertical matchParent ].
 	self editorShortCuts.
 	self editorEvents.
@@ -48,21 +47,28 @@ AgdaEditor >> editorEvents [
 
 { #category : #accessing }
 AgdaEditor >> editorShortCuts [
-	| load |
+	| load save |
 	load := BlShortcutWithAction new
 			combination: BlKeyCombination primaryL;
 			action: [ | future |
-				agdaF save: editor text asString.
+				agdaF save: editor text .
+				self assert: (editor text = agdaF ropedText).
+				editor text: agdaF ropedText.
 				future := agdaF load.
 				self recurseFuture: future ].
-	editor addShortcut: load
+	save := BlShortcutWithAction new
+			combination: BlKeyCombination primaryS;
+			action: [ self numberOfChanges: 0.
+				agdaF save: editor text. ].
+
+	editor addShortcut: load.
+	editor addShortcut: save.
 ]
 
 { #category : #accessing }
 AgdaEditor >> for: anAgdaFile [
 	super initialize.
 	agdaF := anAgdaFile.
-	savedText := agdaF savedText.
 	vpane := BrVerticalPane new matchParent.
 	numberOfChanges := 0.
 	self editor.

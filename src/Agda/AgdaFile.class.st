@@ -4,8 +4,8 @@ Class {
 	#instVars : [
 		'agda',
 		'path',
-		'savedText',
-		'file'
+		'file',
+		'ropedText'
 	],
 	#category : #'Agda-agda'
 }
@@ -20,8 +20,8 @@ AgdaFile >> agda: anAgda path: aPath [
 	agda := anAgda.
 	path := aPath.
 	file := path asFileReference.
-	savedText := BlRunRopedText file: file.
-	savedText fontName: 'mononoki'.
+	ropedText := BlRunRopedText file: file.
+	ropedText fontName: 'mononoki'.
 ]
 
 { #category : #accessing }
@@ -40,13 +40,13 @@ AgdaFile >> handleResponse: aNewResponse [
 
 { #category : #accessing }
 AgdaFile >> highlight: anArray [
-	savedText unstyle.
+	ropedText unstyle.
 	anArray
 		do: [ :info | 
 			| text range type atoms comp missing |
 			missing := true.
 			range := info at: 'range'.
-			text := savedText from: (range at: 1) to: ((range at: 2) min: savedText size).
+			text := ropedText from: (range at: 1) to: ((range at: 2) min: ropedText size).
 			atoms := info at: 'atoms'.
 			atoms size > 0
 				ifTrue: [ type := atoms at: 1.
@@ -123,15 +123,17 @@ AgdaFile >> query: aQuery [
 ]
 
 { #category : #accessing }
-AgdaFile >> save: newContents [
-	(file fullName , '.backup') asFileReference ensureDelete.
-	file copyTo: (file fullName , '.backup') asFileReference.
-	^ file
-		ensureDelete;
-		writeStreamDo: [ :s | s nextPutAll: newContents ]
+AgdaFile >> ropedText [
+^ ropedText.
 ]
 
 { #category : #accessing }
-AgdaFile >> savedText [
-^ savedText.
+AgdaFile >> save: newContents [
+	| string |
+	string := newContents asString.
+	(file fullName , '.backup') asFileReference ensureDelete.
+	file copyTo: (file fullName , '.backup') asFileReference.
+	file
+		ensureDelete;
+		writeStreamDo: [ :s | s nextPutAll: string ]
 ]

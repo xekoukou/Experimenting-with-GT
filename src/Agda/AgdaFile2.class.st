@@ -233,13 +233,13 @@ AgdaFile2 >> query: aQuery [
 ]
 
 { #category : #accessing }
+AgdaFile2 >> ropedText [
+^ savedText
+]
+
+{ #category : #accessing }
 AgdaFile2 >> saveBlock [
 	^ [:editorPane :editor | file gtSaveContents: editor text asString.
 		savedText := BlRunRopedText file: file.
 		self changeBlock value: editorPane value: editor ].
-]
-
-{ #category : #accessing }
-AgdaFile2 >> savedText [
-^ savedText
 ]
