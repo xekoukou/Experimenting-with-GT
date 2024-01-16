@@ -1,25 +1,27 @@
 Class {
-	#name : #AgdaEditor,
+	#name : #AgdaUI,
 	#superclass : #BlElement,
 	#instVars : [
 		'agdaF',
 		'label',
 		'editor',
 		'vpane',
-		'info',
-		'numberOfChanges'
+		'numberOfChanges',
+		'displayInfo',
+		'infoTabGroup',
+		'runningInfo'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaEditor class >> for: anAgdaFile [
+AgdaUI class >> for: anAgdaFile [
     
 	^ self new for:anAgdaFile
 ]
 
 { #category : #accessing }
-AgdaEditor >> editor [
+AgdaUI >> editor [
 	editor := BrEditor new.
 	editor
 		aptitude: BrEditorAptitude new;
@@ -33,7 +35,7 @@ AgdaEditor >> editor [
 ]
 
 { #category : #accessing }
-AgdaEditor >> editorEvents [
+AgdaUI >> editorEvents [
 	| block |
 	block := [ self numberOfChanges > 10
 			ifTrue: [ self numberOfChanges: 0.
@@ -46,7 +48,7 @@ AgdaEditor >> editorEvents [
 ]
 
 { #category : #accessing }
-AgdaEditor >> editorShortCuts [
+AgdaUI >> editorShortCuts [
 	| load save |
 	load := BlShortcutWithAction new
 			combination: BlKeyCombination primaryL;
@@ -66,7 +68,7 @@ AgdaEditor >> editorShortCuts [
 ]
 
 { #category : #accessing }
-AgdaEditor >> for: anAgdaFile [
+AgdaUI >> for: anAgdaFile [
 	super initialize.
 	agdaF := anAgdaFile.
 	vpane := BrVerticalPane new matchParent.
@@ -74,7 +76,7 @@ AgdaEditor >> for: anAgdaFile [
 	self editor.
 	vpane addChild: editor as: 'editor'.
 	vpane addChild: self horBorder as: 'border'.
-	vpane addChild: self info as: 'info'.
+	vpane addChild: self infoTabGroup as: 'info'.
 	self addChild: vpane.
 	self
 		constraintsDo: [ :c | 
@@ -83,7 +85,35 @@ AgdaEditor >> for: anAgdaFile [
 ]
 
 { #category : #accessing }
-AgdaEditor >> horBorder [
+AgdaUI >> gtJSONDataFor: aView context: aContext [
+	<gtView>
+	aContext at: #gtTreeExpansionLevel put: 1.
+	aContext
+		at: #gtTreeValueStyler
+		put: [ :aNode | 
+			aNode key = 'kind'
+				ifFalse: [ aNode value gtDisplayText ]
+				ifTrue: [ aNode value asRopedText highlight: Color yellow darker ] ].
+
+
+	^ aView forward
+		title: 'Agda Msgs';
+		priority: 1;
+		object: [ agdaF agdaMsgs ];
+		view: #gtTreeFor:context:
+]
+
+{ #category : #accessing }
+AgdaUI >> gtModelFor: aView [
+	<gtView>
+	^ aView explicit
+		title: 'Meta Model';
+		priority: 1;
+		stencil: [ (GtCoderElement forObject: agdaF) disablePlayPage ]
+]
+
+{ #category : #accessing }
+AgdaUI >> horBorder [
 	| border |
 	border := BlElement new
 			height: 5;
@@ -94,30 +124,61 @@ AgdaEditor >> horBorder [
 ]
 
 { #category : #accessing }
-AgdaEditor >> info [
-	info := BrEditor new.
-	info
-		aptitude: BrEditorAptitude new;
-		text: 'Welcome to Agda';
+AgdaUI >> infoTabGroup [
+	infoTabGroup := BrTabGroup new.
+	infoTabGroup
+		aptitude: BrGlamorousTabGroupAptitude new;
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
-			c vertical fitContent. ];
-		beReadOnlyWithoutSelection..
-	^ info
+			c vertical fitContent ].
+
+	displayInfo := BrEditor new.
+	displayInfo
+		aptitude: BrEditorAptitude new;
+		text: agdaF displayInfo;
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical fitContent ];
+		beReadOnlyWithSelection.
+
+	runningInfo := BrEditor new.
+	runningInfo
+		aptitude: BrEditorAptitude new;
+		text: agdaF runningInfo;
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical fitContent ];
+		beReadOnlyWithSelection.
+
+	infoTabGroup
+		addTab: (BrTab new
+				aptitude: BrGlamorousTabAptitude new;
+				label: 'display info';
+				stencil: [ displayInfo ]);
+		addTab: (BrTab new
+				aptitude: BrGlamorousTabAptitude new;
+				label: 'running info';
+				stencil: [ runningInfo ]).
+
+
+
+
+
+	^ infoTabGroup
 ]
 
 { #category : #accessing }
-AgdaEditor >> numberOfChanges [
+AgdaUI >> numberOfChanges [
 ^ numberOfChanges
 ]
 
 { #category : #accessing }
-AgdaEditor >> numberOfChanges: anInteger [
+AgdaUI >> numberOfChanges: anInteger [
 	numberOfChanges := anInteger
 ]
 
 { #category : #accessing }
-AgdaEditor >> recurseFuture: aFuture [
+AgdaUI >> recurseFuture: aFuture [
 	aFuture
 		ifNotNil: [ | nextFuture |
 			self

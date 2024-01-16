@@ -35,5 +35,5 @@ AgdaInfo >> shortcuts [
 
 { #category : #accessing }
 AgdaInfo >> updateText [
-self inUIProcessDo: [ self editor text: (agdaF info) glamorousCodeFont ].
+self inUIProcessDo: [ self editor text: (agdaF infoTabGroup) glamorousCodeFont ].
 ]

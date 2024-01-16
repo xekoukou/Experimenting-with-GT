@@ -1,45 +1,76 @@
 Class {
-	#name : #AgdaFile,
+	#name : #AgdaModel,
 	#superclass : #Object,
 	#instVars : [
 		'agda',
 		'path',
 		'file',
-		'ropedText'
+		'ropedText',
+		'runningInfo',
+		'displayInfo',
+		'agdaMsgs'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaFile class >> agda: anAgda path: aPath [
+AgdaModel class >> agda: anAgda path: aPath [
 ^ self new agda: anAgda path: aPath.
 ]
 
 { #category : #accessing }
-AgdaFile >> agda: anAgda path: aPath [
+AgdaModel >> agda: anAgda path: aPath [
 	agda := anAgda.
 	path := aPath.
 	file := path asFileReference.
 	ropedText := BlRunRopedText file: file.
 	ropedText fontName: 'mononoki'.
+	runningInfo := 'Idle.' asRopedText.
+	displayInfo := 'Welcome to Agda.' asRopedText.
+	agdaMsgs := LinkedList new.
 ]
 
 { #category : #accessing }
-AgdaFile >> displayInfo: anObject [ 
+AgdaModel >> agdaMsgs [
+^ agdaMsgs
 ]
 
 { #category : #accessing }
-AgdaFile >> handleResponse: aNewResponse [
+AgdaModel >> clearHighlightingInfo [
+ropedText unstyle.
+]
+
+{ #category : #accessing }
+AgdaModel >> clearRunningInfo [
+	runningInfo := runningInfo deleteAll.
+]
+
+{ #category : #accessing }
+AgdaModel >> displayInfo [
+^ displayInfo
+]
+
+{ #category : #accessing }
+AgdaModel >> displayInfo: info [
+]
+
+{ #category : #accessing }
+AgdaModel >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.
+	agdaMsgs add: data.
 	(data at: 'kind') = 'HighlightingInfo'
 		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ].
-			(data at: 'kind') = 'DisplayInfo'
-		ifTrue: [ self displayInfo: (data at: 'info') ].
+	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
+	(data at: 'kind') = 'ClearHighlightingInfo'
+		ifTrue: [ self clearHighlightingInfo ].
+	(data at: 'kind') = 'RunningInfo' ifTrue: [ self moreRunningInfo: (data at: 'message'). ].
+	(data at: 'kind') = 'DisplayInfo'
+		ifTrue: [ self displayInfo: (data at: 'info') ]
 ]
 
 { #category : #accessing }
-AgdaFile >> highlight: anArray [
+AgdaModel >> highlight: anArray [
 	ropedText unstyle.
 	anArray
 		do: [ :info | 
@@ -107,33 +138,44 @@ AgdaFile >> highlight: anArray [
 						ifTrue: [ text foreground: Color purple muchDarker.
 							missing := false ].
 					type = 'error'
-						ifTrue: [ text background: Color yellow muchDarker.
+						ifTrue: [ text highlight: Color yellow darker.
 							missing := false ].
 					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ].
 ]
 
 { #category : #accessing }
-AgdaFile >> load [
+AgdaModel >> load [
+	agdaMsgs removeAll.
 	^ self query: (AgdaQuery new load: path)
 ]
 
 { #category : #accessing }
-AgdaFile >> query: aQuery [
+AgdaModel >> moreRunningInfo: aMessage [
+runningInfo := runningInfo , (aMessage asRopedText)
+]
+
+{ #category : #accessing }
+AgdaModel >> query: aQuery [
 	^ agda query: aQuery
 ]
 
 { #category : #accessing }
-AgdaFile >> ropedText [
+AgdaModel >> ropedText [
 ^ ropedText.
 ]
 
 { #category : #accessing }
-AgdaFile >> save: newContents [
+AgdaModel >> runningInfo [
+^ runningInfo
+]
+
+{ #category : #accessing }
+AgdaModel >> save: newContents [
 	| string |
 	string := newContents asString.
 	(file fullName , '.backup') asFileReference ensureDelete.
 	file copyTo: (file fullName , '.backup') asFileReference.
 	file
 		ensureDelete;
-		writeStreamDo: [ :s | s nextPutAll: string ]
+		writeStreamDo: [ :s | s nextPutAll: string ].
 ]
