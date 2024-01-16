@@ -42,7 +42,7 @@ ropedText unstyle.
 
 { #category : #accessing }
 AgdaModel >> clearRunningInfo [
-	runningInfo := runningInfo deleteAll.
+	runningInfo size = 0 ifFalse: [ runningInfo := runningInfo deleteAll ]
 ]
 
 { #category : #accessing }
@@ -52,6 +52,22 @@ AgdaModel >> displayInfo [
 
 { #category : #accessing }
 AgdaModel >> displayInfo: info [
+	(info at: 'kind') = 'AllGoalsWarnings'
+		ifTrue: [ (info at: 'visibleGoals') do: [ :goal | self displayVisibleGoal ].
+			(info at: 'invisibleGoals') do: [ :goal | self displayInvisibleGoal ].
+			(info at: 'warnings') do: [ :goal | self displayWarnings ] ]
+]
+
+{ #category : #accessing }
+AgdaModel >> displayInvisibleGoal [
+]
+
+{ #category : #accessing }
+AgdaModel >> displayVisibleGoal [
+]
+
+{ #category : #accessing }
+AgdaModel >> displayWarnings [
 ]
 
 { #category : #accessing }
