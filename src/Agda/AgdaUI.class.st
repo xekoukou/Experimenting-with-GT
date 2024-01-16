@@ -87,29 +87,39 @@ AgdaUI >> for: anAgdaFile [
 { #category : #accessing }
 AgdaUI >> gtJSONDataFor: aView context: aContext [
 	<gtView>
-	aContext at: #gtTreeExpansionLevel put: 1.
-	aContext
-		at: #gtTreeValueStyler
-		put: [ :aNode | 
-			aNode key = 'kind'
-				ifFalse: [ aNode value gtDisplayText ]
-				ifTrue: [ aNode value asRopedText highlight: Color yellow darker ] ].
-
-
 	^ aView forward
 		title: 'Agda Msgs';
 		priority: 1;
-		object: [ agdaF agdaMsgs ];
-		view: #gtTreeFor:context:
+		object: [ agdaF ];
+		view: #gtJSONDataFor:context:
 ]
 
 { #category : #accessing }
-AgdaUI >> gtModelFor: aView [
+AgdaUI >> gtMetaFor: aView [
 	<gtView>
 	^ aView explicit
-		title: 'Meta Model';
+		title: 'Meta';
+		priority: 1;
+		stencil: [ (GtCoderElement forObject: self) disablePlayPage ]
+]
+
+{ #category : #accessing }
+AgdaUI >> gtModelMetaFor: aView [
+	<gtView>
+	^ aView explicit
+		title: 'Model Meta';
 		priority: 1;
 		stencil: [ (GtCoderElement forObject: agdaF) disablePlayPage ]
+]
+
+{ #category : #accessing }
+AgdaUI >> gtModelRawFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Model Raw';
+		priority: 1;
+		object: [ agdaF ];
+		view: #gtRawFor:
 ]
 
 { #category : #accessing }

@@ -55,6 +55,25 @@ AgdaModel >> displayInfo: info [
 ]
 
 { #category : #accessing }
+AgdaModel >> gtJSONDataFor: aView context: aContext [
+	<gtView>
+	aContext at: #gtTreeExpansionLevel put: 1.
+	aContext
+		at: #gtTreeValueStyler
+		put: [ :aNode | 
+			aNode key = 'kind'
+				ifFalse: [ aNode value gtDisplayText ]
+				ifTrue: [ aNode value asRopedText highlight: Color yellow darker ] ].
+
+
+	^ aView forward
+		title: 'Agda Msgs';
+		priority: 1;
+		object: [ agdaMsgs ];
+		view: #gtTreeFor:context:
+]
+
+{ #category : #accessing }
 AgdaModel >> handleResponse: aNewResponse [
 	| data |
 	data := aNewResponse.

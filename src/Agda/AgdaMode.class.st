@@ -180,10 +180,13 @@ AgdaMode >> response: aRem [
 
 	[ par := self parseResp: rem.
 	(par at: 1) = ''
-		ifTrue: [ (rem findString: 'JSON>') in: [ :index | index > 0 ifTrue: [ ready := true. ^ nil ] ].
+		ifTrue: [ (rem findString: 'JSON>')
+				in: [ :index | 
+					index > 0
+						ifTrue: [ ready := true.
+							^ nil ] ].
 			aString := out pollString.
 			rem := rem , aString ]
-		ifFalse: [ self inform: (par at: 1).
-			^ {STONJSON fromString: (par at: 1).
-				[self response: (par at: 2)] asAsyncFuture } ] ] repeat
+		ifFalse: [ ^ {STONJSON fromString: (par at: 1).
+				[ self response: (par at: 2) ] asAsyncFuture} ] ] repeat
 ]
