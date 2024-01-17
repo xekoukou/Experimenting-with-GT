@@ -8,7 +8,9 @@ Class {
 		'ropedText',
 		'runningInfo',
 		'displayInfo',
-		'agdaMsgs'
+		'agdaMsgs',
+		'tob',
+		'top'
 	],
 	#category : #'Agda-agda'
 }
@@ -36,7 +38,7 @@ AgdaModel >> agdaMsgs [
 ]
 
 { #category : #accessing }
-AgdaModel >> clearHighlightingInfo [
+AgdaModel >> clearHighlighting [
 ropedText unstyle.
 ]
 
@@ -86,7 +88,12 @@ AgdaModel >> gtJSONDataFor: aView context: aContext [
 		title: 'Agda Msgs';
 		priority: 1;
 		object: [ agdaMsgs ];
-		view: #gtTreeFor:context:
+		view: #gtTreeFor:context:;
+		actionButtonIcon: BrGlamorousVectorIcons accept
+			tooltip: 'Save Comment'
+			action: [ :aToggle :aTab | 
+				tob := aTab viewContentElement phlow	"LePharoClassDatabase uniqueInstance 
+				savePage: aTab viewContentElement page" ].
 ]
 
 { #category : #accessing }
@@ -97,8 +104,8 @@ AgdaModel >> handleResponse: aNewResponse [
 	(data at: 'kind') = 'HighlightingInfo'
 		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ].
 	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
-	(data at: 'kind') = 'ClearHighlightingInfo'
-		ifTrue: [ self clearHighlightingInfo ].
+	(data at: 'kind') = 'ClearHighlighting'
+		ifTrue: [ self clearHighlighting ].
 	(data at: 'kind') = 'RunningInfo' ifTrue: [ self moreRunningInfo: (data at: 'message'). ].
 	(data at: 'kind') = 'DisplayInfo'
 		ifTrue: [ self displayInfo: (data at: 'info') ]
@@ -106,12 +113,12 @@ AgdaModel >> handleResponse: aNewResponse [
 
 { #category : #accessing }
 AgdaModel >> highlight: anArray [
-	ropedText unstyle.
 	anArray
 		do: [ :info | 
-			| text range type atoms comp missing |
+			| definitionSite text range type atoms comp missing |
 			missing := true.
 			range := info at: 'range'.
+			definitionSite := info at: 'definitionSite'.
 			text := ropedText from: (range at: 1) to: ((range at: 2) min: ropedText size).
 			atoms := info at: 'atoms'.
 			atoms size > 0
@@ -172,10 +179,22 @@ AgdaModel >> highlight: anArray [
 					type = 'number'
 						ifTrue: [ text foreground: Color purple muchDarker.
 							missing := false ].
+					type = 'hole'
+						ifTrue: [ text highlight: Color green darker.
+							missing := false ].
+					type = 'operator' ifTrue: [ missing := false ].
 					type = 'error'
 						ifTrue: [ text highlight: Color yellow darker.
 							missing := false ].
-					missing ifTrue: [ self inform: 'missing highlight: ' , type ] ] ].
+					missing
+						ifTrue: [ self inform: 'missing highlight: ' , type.
+							top := info ].
+							"Fix this"
+					definitionSite
+						ifNotNil: [ text
+								onClick: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: text ];
+								attribute: (BrTextHoverStylableAttribute new
+										attribute: (BlTextHighlightAttribute new paint: Color green darker)) ] ] ]
 ]
 
 { #category : #accessing }
