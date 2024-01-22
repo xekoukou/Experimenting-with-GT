@@ -76,6 +76,40 @@
 				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
 			},
 			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-22T20:12:59.006186+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-22T20:13:04.907315+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "BPREhO7LDQChxDTgDMmihQ=="
+				},
+				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
+			},
+			{
 				"__type" : "textSnippet",
 				"children" : {
 					"__type" : "snippets",
@@ -344,14 +378,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-16T14:45:52.974487+02:00"
+						"dateAndTimeString" : "2024-01-16T14:46:17.932089+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "f/s32RDIDQCvsN7dA0cRXg=="
 				},
-				"code" : "AgdaEditor for: agdaModel."
+				"code" : "AgdaUI for: agdaModel."
 			},
 			{
 				"__type" : "pharoSnippet",

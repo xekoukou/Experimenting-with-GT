@@ -53,18 +53,19 @@ AgdaUI >> editorShortCuts [
 	load := BlShortcutWithAction new
 			combination: BlKeyCombination primaryL;
 			action: [ | future |
-				agdaF save: editor text .
-				self assert: (editor text = agdaF ropedText).
+				infoTabGroup selectTabWithLabelString: 'running info'.
+				agdaF save: editor text.
+				self assert: editor text = agdaF ropedText.
 				editor text: agdaF ropedText.
 				future := agdaF load.
 				self recurseFuture: future ].
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
 			action: [ self numberOfChanges: 0.
-				agdaF save: editor text. ].
+				agdaF save: editor text ].
 
 	editor addShortcut: load.
-	editor addShortcut: save.
+	editor addShortcut: save
 ]
 
 { #category : #accessing }

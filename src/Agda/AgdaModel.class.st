@@ -8,9 +8,7 @@ Class {
 		'ropedText',
 		'runningInfo',
 		'displayInfo',
-		'agdaMsgs',
-		'tob',
-		'top'
+		'agdaMsgs'
 	],
 	#category : #'Agda-agda'
 }
@@ -88,12 +86,7 @@ AgdaModel >> gtJSONDataFor: aView context: aContext [
 		title: 'Agda Msgs';
 		priority: 1;
 		object: [ agdaMsgs ];
-		view: #gtTreeFor:context:;
-		actionButtonIcon: BrGlamorousVectorIcons accept
-			tooltip: 'Save Comment'
-			action: [ :aToggle :aTab | 
-				tob := aTab viewContentElement phlow	"LePharoClassDatabase uniqueInstance 
-				savePage: aTab viewContentElement page" ].
+		view: #gtTreeFor:context:.
 ]
 
 { #category : #accessing }
@@ -113,13 +106,15 @@ AgdaModel >> handleResponse: aNewResponse [
 
 { #category : #accessing }
 AgdaModel >> highlight: anArray [
+	| note |
 	anArray
 		do: [ :info | 
 			| definitionSite text range type atoms comp missing |
 			missing := true.
 			range := info at: 'range'.
 			definitionSite := info at: 'definitionSite'.
-			text := ropedText from: (range at: 1) to: ((range at: 2) min: ropedText size).
+			note := info at: 'note'.
+			text := ropedText from: (range at: 1) to: (range at: 2) - 1.
 			atoms := info at: 'atoms'.
 			atoms size > 0
 				ifTrue: [ type := atoms at: 1.
@@ -186,15 +181,12 @@ AgdaModel >> highlight: anArray [
 					type = 'error'
 						ifTrue: [ text highlight: Color yellow darker.
 							missing := false ].
-					missing
-						ifTrue: [ self inform: 'missing highlight: ' , type.
-							top := info ].
-							"Fix this"
+					missing ifTrue: [ self inform: 'missing highlight: ' , type ].
+					note = '' ifFalse: [ self inform: 'note' , note ].
 					definitionSite
-						ifNotNil: [ text
-								onClick: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: text ];
-								attribute: (BrTextHoverStylableAttribute new
-										attribute: (BlTextHighlightAttribute new paint: Color green darker)) ] ] ]
+						ifNotNil: [ text attributesBuilder
+								attribute: (BrTextClickAttribute new
+										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: text ]) ] ] ]
 ]
 
 { #category : #accessing }
