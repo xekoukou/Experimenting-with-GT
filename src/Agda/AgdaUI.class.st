@@ -56,9 +56,10 @@ AgdaUI >> editorShortCuts [
 				infoTabGroup selectTabWithLabelString: 'running info'.
 				agdaF save: editor text.
 				self assert: editor text = agdaF ropedText.
-				editor text: agdaF ropedText.
 				future := agdaF load.
-				self recurseFuture: future ].
+				self
+					recurseFuture: future
+					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
 			action: [ self numberOfChanges: 0.
@@ -190,6 +191,11 @@ AgdaUI >> numberOfChanges: anInteger [
 
 { #category : #accessing }
 AgdaUI >> recurseFuture: aFuture [
+	self recurseFuture: aFuture final: [  ]
+]
+
+{ #category : #accessing }
+AgdaUI >> recurseFuture: aFuture final: aBlock [
 	aFuture
 		ifNotNil: [ | nextFuture |
 			self
@@ -202,8 +208,9 @@ AgdaUI >> recurseFuture: aFuture [
 							resp
 								ifNotNil: [ nextFuture := resp at: 2.
 									agdaF handleResponse: (resp at: 1).
-									self recurseFuture: nextFuture ]
-								ifNil: [ ceditor beEditable ] ];
+									self recurseFuture: nextFuture final: aBlock ]
+								ifNil: [ aBlock value.
+									ceditor beEditable ] ];
 						whenError: [ :celement :anError | 
 							| ceditor cinfo |
 							ceditor := self childNamed: 'editor'.

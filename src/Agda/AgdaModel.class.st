@@ -185,8 +185,10 @@ AgdaModel >> highlight: anArray [
 					note = '' ifFalse: [ self inform: 'note' , note ].
 					definitionSite
 						ifNotNil: [ text attributesBuilder
-								attribute: (BrTextClickAttribute new
-										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: text ]) ] ] ]
+								attribute: (BrTextDoubleClickAttribute new
+										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
+											anEvent currentTarget phlow
+												spawnObject: (AgdaUI for: (AgdaModel agda: agda path: Path / (definitionSite at: 'filepath'))) ]) ] ] ]
 ]
 
 { #category : #accessing }
