@@ -3,11 +3,11 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'agda',
-		'tpath',
 		'runningInfo',
 		'displayInfo',
 		'agdaMsgs',
-		'agdaFiles'
+		'agdaFiles',
+		'mpath'
 	],
 	#category : #'Agda-agda'
 }
@@ -20,12 +20,17 @@ AgdaModel class >> agda: anAgda path: aPath [
 { #category : #accessing }
 AgdaModel >> agda: anAgda path: aPath [
 	agda := anAgda.
-	tpath := aPath.
+	mpath := aPath.
 	agdaFiles := Dictionary new.
 	agdaFiles at: aPath put: (AgdaFile path: aPath).
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
 	agdaMsgs := LinkedList new
+]
+
+{ #category : #accessing }
+AgdaModel >> agdaFiles [
+	^ agdaFiles
 ]
 
 { #category : #accessing }
@@ -88,10 +93,10 @@ AgdaModel >> handleResponse: aNewResponse [
 	data := aNewResponse.
 	agdaMsgs add: data.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [ (agdaFiles at: tpath) highlight: (data at: 'info' at: 'payload') ].
+		ifTrue: [ (agdaFiles at: mpath) highlight: (data at: 'info' at: 'payload') ].
 	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
 	(data at: 'kind') = 'ClearHighlighting'
-		ifTrue: [ (agdaFiles at: tpath) clearHighlighting ].
+		ifTrue: [ (agdaFiles at: mpath) clearHighlighting ].
 	(data at: 'kind') = 'RunningInfo'
 		ifTrue: [ self moreRunningInfo: (data at: 'message') ].
 	(data at: 'kind') = 'DisplayInfo'
@@ -106,14 +111,19 @@ AgdaModel >> load [
 
 { #category : #accessing }
 AgdaModel >> load: aPath [
-	tpath := aPath.
+	mpath := aPath.
 	agdaMsgs removeAll.
-	^ self query: (AgdaQuery new load: tpath)
+	^ self query: (AgdaQuery new load: mpath)
 ]
 
 { #category : #accessing }
 AgdaModel >> moreRunningInfo: aMessage [
 runningInfo := runningInfo , (aMessage asRopedText)
+]
+
+{ #category : #accessing }
+AgdaModel >> mpath [
+	^ mpath
 ]
 
 { #category : #accessing }

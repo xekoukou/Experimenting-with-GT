@@ -2,83 +2,83 @@ Class {
 	#name : #AgdaUI,
 	#superclass : #BlElement,
 	#instVars : [
-		'agdaF',
 		'label',
-		'editor',
+		'editors',
 		'vpane',
 		'numberOfChanges',
 		'displayInfo',
 		'infoTabGroup',
 		'runningInfo',
-		'hpane'
+		'hpane',
+		'agdaModel'
 	],
 	#category : #'Agda-agda'
 }
 
 { #category : #accessing }
-AgdaUI class >> for: anAgdaFile [
+AgdaUI class >> for: anAgdaModel [
     
-	^ self new for:anAgdaFile
+	^ self new for:anAgdaModel
 ]
 
 { #category : #accessing }
-AgdaUI >> editor [
-	editor := BrEditor new.
-	editor
-		aptitude: BrEditorAptitude new;
-		text: agdaF ropedText unstyle;
-		constraintsDo: [ :c | 
-			c horizontal exact: 700.
-			c vertical matchParent ].
-	self editorShortCuts.
-	self editorEvents.
-	^ editor
-]
-
-{ #category : #accessing }
-AgdaUI >> editorEvents [
+AgdaUI >> editorEvents: anEditor [
 	| block |
 	block := [ self numberOfChanges > 10
 			ifTrue: [ self numberOfChanges: 0.
-				agdaF save: editor text asString ]
+				agdaModel save: anEditor text asString ]
 			ifFalse: [ self numberOfChanges: self numberOfChanges + 1 ] ].
-	editor editor
+	anEditor editor
 		when: BrTextEditorInsertedEvent do: block;
 		when: BrTextEditorDeletedEvent do: block;
 		when: BlInfiniteDataSourceChanged do: block
 ]
 
 { #category : #accessing }
-AgdaUI >> editorShortCuts [
+AgdaUI >> editorFor: aPath [
+	| editor |
+	editor := BrEditor new.
+	editor
+		aptitude: BrEditorAptitude new;
+		text: (agdaModel agdaFiles at: aPath) ropedText unstyle;
+		constraintsDo: [ :c | 
+			c horizontal exact: 700.
+			c vertical matchParent ].
+	self editorShortCuts: editor.
+	self editorEvents: editor.
+	^ editor
+]
+
+{ #category : #accessing }
+AgdaUI >> editorShortCuts: anEditor [
 	| load save |
 	load := BlShortcutWithAction new
 			combination: BlKeyCombination primaryL;
 			action: [ | future |
 				infoTabGroup selectTabWithLabelString: 'running info'.
-				agdaF save: editor text.
-				self assert: editor text = agdaF ropedText.
-				future := agdaF load.
+				agdaModel save: anEditor text.
+				self assert: anEditor text = agdaModel ropedText.
+				future := agdaModel load.
 				self
 					recurseFuture: future
 					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
 			action: [ self numberOfChanges: 0.
-				agdaF save: editor text ].
+				agdaModel save: anEditor text ].
 
-	editor addShortcut: load.
-	editor addShortcut: save
+	anEditor addShortcut: load.
+	anEditor addShortcut: save
 ]
 
 { #category : #accessing }
-AgdaUI >> for: anAgdaFile [
+AgdaUI >> for: anAgdaModel [
 	super initialize.
-	agdaF := anAgdaFile.
+	agdaModel := anAgdaModel.
 	vpane := BrVerticalPane new matchParent.
 	hpane := BrHorizontalPane new matchParent.
 	numberOfChanges := 0.
-	self editor.
-	hpane addChild: editor as: 'editor'.
+	hpane addChild: (self editorFor: agdaModel mpath) as: 'main editor'.
 	hpane addChild: self verBorder as: 'verBorder'.
 	vpane addChild: hpane as: 'hpane'.
 	vpane addChild: self horBorder as: 'horBorder'.
@@ -96,7 +96,7 @@ AgdaUI >> gtJSONDataFor: aView context: aContext [
 	^ aView forward
 		title: 'Agda Msgs';
 		priority: 1;
-		object: [ agdaF ];
+		object: [ agdaModel ];
 		view: #gtJSONDataFor:context:
 ]
 
@@ -115,7 +115,7 @@ AgdaUI >> gtModelMetaFor: aView [
 	^ aView explicit
 		title: 'Model Meta';
 		priority: 1;
-		stencil: [ (GtCoderElement forObject: agdaF) disablePlayPage ]
+		stencil: [ (GtCoderElement forObject: agdaModel) disablePlayPage ]
 ]
 
 { #category : #accessing }
@@ -124,7 +124,7 @@ AgdaUI >> gtModelRawFor: aView [
 	^ aView forward
 		title: 'Model Raw';
 		priority: 1;
-		object: [ agdaF ];
+		object: [ agdaModel ];
 		view: #gtRawFor:
 ]
 
@@ -151,7 +151,7 @@ AgdaUI >> infoTabGroup [
 	displayInfo := BrEditor new.
 	displayInfo
 		aptitude: BrEditorAptitude new;
-		text: agdaF displayInfo;
+		text: agdaModel displayInfo;
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical fitContent ];
@@ -160,7 +160,7 @@ AgdaUI >> infoTabGroup [
 	runningInfo := BrEditor new.
 	runningInfo
 		aptitude: BrEditorAptitude new;
-		text: agdaF runningInfo;
+		text: agdaModel runningInfo;
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical fitContent ];
@@ -211,7 +211,7 @@ AgdaUI >> recurseFuture: aFuture final: aBlock [
 							cinfo := self childNamed: 'info'.
 							resp
 								ifNotNil: [ nextFuture := resp at: 2.
-									agdaF handleResponse: (resp at: 1).
+									agdaModel handleResponse: (resp at: 1).
 									self recurseFuture: nextFuture final: aBlock ]
 								ifNil: [ aBlock value.
 									ceditor beEditable ] ];
