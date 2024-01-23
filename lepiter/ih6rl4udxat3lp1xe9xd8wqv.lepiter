@@ -310,14 +310,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-16T14:45:44.437704+02:00"
+						"dateAndTimeString" : "2024-01-23T17:25:45.265919+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "Sxm1dBDHDQCZ+FLlBq2EDg=="
 				},
-				"code" : "agdaModel := AgdaModel agda: agda path: path2."
+				"code" : "agdaModel := AgdaModel path: path2."
 			},
 			{
 				"__type" : "pharoSnippet",
