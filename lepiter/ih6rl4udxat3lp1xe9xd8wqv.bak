@@ -66,14 +66,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-03T19:19:32.351618+02:00"
+						"dateAndTimeString" : "2024-01-22T20:13:24.498798+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "rwVjJ3rGDQCae77VClkV5g=="
 				},
-				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
+				"code" : "path1 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
 			},
 			{
 				"__type" : "pharoSnippet",
@@ -100,14 +100,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-22T20:13:04.907315+02:00"
+						"dateAndTimeString" : "2024-01-22T20:13:28.593641+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "BPREhO7LDQChxDTgDMmihQ=="
 				},
-				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'MLTT' / 'Bool.lagda'."
+				"code" : "path2 := Path / 'home' / 'apostolis' / 'Workspace' / 'typetopology' / 'source' / 'Categories' / 'Functor.lagda'."
 			},
 			{
 				"__type" : "textSnippet",

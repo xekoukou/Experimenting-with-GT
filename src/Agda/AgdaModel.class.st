@@ -3,12 +3,11 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'agda',
-		'path',
-		'file',
-		'ropedText',
+		'tpath',
 		'runningInfo',
 		'displayInfo',
-		'agdaMsgs'
+		'agdaMsgs',
+		'agdaFiles'
 	],
 	#category : #'Agda-agda'
 }
@@ -21,23 +20,17 @@ AgdaModel class >> agda: anAgda path: aPath [
 { #category : #accessing }
 AgdaModel >> agda: anAgda path: aPath [
 	agda := anAgda.
-	path := aPath.
-	file := path asFileReference.
-	ropedText := BlRunRopedText file: file.
-	ropedText fontName: 'mononoki'.
+	tpath := aPath.
+	agdaFiles := Dictionary new.
+	agdaFiles at: aPath put: (AgdaFile path: aPath).
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
-	agdaMsgs := LinkedList new.
+	agdaMsgs := LinkedList new
 ]
 
 { #category : #accessing }
 AgdaModel >> agdaMsgs [
 ^ agdaMsgs
-]
-
-{ #category : #accessing }
-AgdaModel >> clearHighlighting [
-ropedText unstyle.
 ]
 
 { #category : #accessing }
@@ -95,106 +88,27 @@ AgdaModel >> handleResponse: aNewResponse [
 	data := aNewResponse.
 	agdaMsgs add: data.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [ self highlight: (data at: 'info' at: 'payload') ].
+		ifTrue: [ (agdaFiles at: tpath) highlight: (data at: 'info' at: 'payload') ].
 	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
 	(data at: 'kind') = 'ClearHighlighting'
-		ifTrue: [ self clearHighlighting ].
-	(data at: 'kind') = 'RunningInfo' ifTrue: [ self moreRunningInfo: (data at: 'message'). ].
+		ifTrue: [ (agdaFiles at: tpath) clearHighlighting ].
+	(data at: 'kind') = 'RunningInfo'
+		ifTrue: [ self moreRunningInfo: (data at: 'message') ].
 	(data at: 'kind') = 'DisplayInfo'
 		ifTrue: [ self displayInfo: (data at: 'info') ]
-]
-
-{ #category : #accessing }
-AgdaModel >> highlight: anArray [
-	| note |
-	anArray
-		do: [ :info | 
-			| definitionSite text range type atoms comp missing |
-			missing := true.
-			range := info at: 'range'.
-			definitionSite := info at: 'definitionSite'.
-			note := info at: 'note'.
-			text := ropedText from: (range at: 1) to: (range at: 2) - 1.
-			atoms := info at: 'atoms'.
-			atoms size > 0
-				ifTrue: [ type := atoms at: 1.
-					comp := [ :co | atoms size > 1 ifFalse: [ false ] ifTrue: [ (atoms at: 2) = co ] ].
-
-					type = 'markup'
-						ifTrue: [ text foreground: Color red muchDarker.
-							missing := false ].
-					type = 'symbol'
-						ifTrue: [ text foreground: Color black.
-							missing := false ].
-					type = 'keyword'
-						ifTrue: [ text foreground: Color orange muchDarker.
-							missing := false ].
-					type = 'pragma'
-						ifTrue: [ text foreground: Color black.
-							missing := false ].
-					type = 'comment'
-						ifTrue: [ text foreground: Color red muchDarker.
-							missing := false ].
-					type = 'module'
-						ifTrue: [ text foreground: Color purple muchDarker.
-							missing := false ].
-					type = 'datatype' & (atoms size = 1)
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'datatype' & (comp value: 'operator')
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'primitive'
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'function' & (comp value: 'operator')
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'inductiveconstructor'
-						ifTrue: [ text foreground: Color green muchDarker.
-							missing := false ].
-					type = 'function' & (atoms size = 1)
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'generalizable'
-						ifTrue: [ text foreground: Color black.
-							missing := false ].
-					type = 'bound'
-						ifTrue: [ text foreground: Color black.
-							missing := false ].
-					type = 'background'
-						ifTrue: [ text foreground: Color yellow muchDarker.
-							missing := false ].
-					type = 'record'
-						ifTrue: [ text foreground: Color blue muchDarker.
-							missing := false ].
-					type = 'field'
-						ifTrue: [ text foreground: Color red darker.
-							missing := false ].
-					type = 'number'
-						ifTrue: [ text foreground: Color purple muchDarker.
-							missing := false ].
-					type = 'hole'
-						ifTrue: [ text highlight: Color green darker.
-							missing := false ].
-					type = 'operator' ifTrue: [ missing := false ].
-					type = 'error'
-						ifTrue: [ text highlight: Color yellow darker.
-							missing := false ].
-					missing ifTrue: [ self inform: 'missing highlight: ' , type ].
-					note = '' ifFalse: [ self inform: 'note' , note ].
-					definitionSite
-						ifNotNil: [ text attributesBuilder
-								attribute: (BrTextDoubleClickAttribute new
-										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
-											anEvent currentTarget phlow
-												spawnObject: (AgdaUI for: (AgdaModel agda: agda path: Path / (definitionSite at: 'filepath'))) ]) ] ] ]
 ]
 
 { #category : #accessing }
 AgdaModel >> load [
 	agdaMsgs removeAll.
 	^ self query: (AgdaQuery new load: path)
+]
+
+{ #category : #accessing }
+AgdaModel >> load: aPath [
+	tpath := aPath.
+	agdaMsgs removeAll.
+	^ self query: (AgdaQuery new load: tpath)
 ]
 
 { #category : #accessing }
@@ -208,22 +122,6 @@ AgdaModel >> query: aQuery [
 ]
 
 { #category : #accessing }
-AgdaModel >> ropedText [
-^ ropedText.
-]
-
-{ #category : #accessing }
 AgdaModel >> runningInfo [
 ^ runningInfo
-]
-
-{ #category : #accessing }
-AgdaModel >> save: newContents [
-	| string |
-	string := newContents asString.
-	(file fullName , '.backup') asFileReference ensureDelete.
-	file copyTo: (file fullName , '.backup') asFileReference.
-	file
-		ensureDelete;
-		writeStreamDo: [ :s | s nextPutAll: string ].
 ]

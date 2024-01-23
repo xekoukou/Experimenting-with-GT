@@ -9,7 +9,8 @@ Class {
 		'numberOfChanges',
 		'displayInfo',
 		'infoTabGroup',
-		'runningInfo'
+		'runningInfo',
+		'hpane'
 	],
 	#category : #'Agda-agda'
 }
@@ -27,7 +28,7 @@ AgdaUI >> editor [
 		aptitude: BrEditorAptitude new;
 		text: agdaF ropedText unstyle;
 		constraintsDo: [ :c | 
-			c horizontal fitContent.
+			c horizontal exact: 700.
 			c vertical matchParent ].
 	self editorShortCuts.
 	self editorEvents.
@@ -74,10 +75,13 @@ AgdaUI >> for: anAgdaFile [
 	super initialize.
 	agdaF := anAgdaFile.
 	vpane := BrVerticalPane new matchParent.
+	hpane := BrHorizontalPane new matchParent.
 	numberOfChanges := 0.
 	self editor.
-	vpane addChild: editor as: 'editor'.
-	vpane addChild: self horBorder as: 'border'.
+	hpane addChild: editor as: 'editor'.
+	hpane addChild: self verBorder as: 'verBorder'.
+	vpane addChild: hpane as: 'hpane'.
+	vpane addChild: self horBorder as: 'horBorder'.
 	vpane addChild: self infoTabGroup as: 'info'.
 	self addChild: vpane.
 	self
@@ -128,7 +132,7 @@ AgdaUI >> gtModelRawFor: aView [
 AgdaUI >> horBorder [
 	| border |
 	border := BlElement new
-			height: 5;
+			height: 2;
 			constraintsDo: [ :c | c horizontal matchParent ];
 			background: Color gray;
 			yourself.
@@ -222,4 +226,15 @@ AgdaUI >> recurseFuture: aFuture final: aBlock [
 							cinfo := self childNamed: 'info'.
 							ceditor beReadOnlyWithSelection ].
 					anElementFuture future: aFuture ] ]
+]
+
+{ #category : #accessing }
+AgdaUI >> verBorder [
+	| border |
+	border := BlElement new
+			width: 2;
+			constraintsDo: [ :c | c vertical matchParent ];
+			background: Color gray;
+			yourself.
+	^ border
 ]
