@@ -106,7 +106,7 @@ AgdaModel >> handleResponse: aNewResponse [
 { #category : #accessing }
 AgdaModel >> load [
 	agdaMsgs removeAll.
-	^ self query: (AgdaQuery new load: path)
+	^ self query: (AgdaQuery new load: mpath)
 ]
 
 { #category : #accessing }

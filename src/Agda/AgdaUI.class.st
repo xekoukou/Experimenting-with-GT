@@ -22,11 +22,11 @@ AgdaUI class >> for: anAgdaModel [
 ]
 
 { #category : #accessing }
-AgdaUI >> editorEvents: anEditor [
+AgdaUI >> editorEventsFor: anEditor path: aPath [
 	| block |
 	block := [ self numberOfChanges > 10
 			ifTrue: [ self numberOfChanges: 0.
-				agdaModel save: anEditor text asString ]
+				(agdaModel agdaFiles at: aPath) save: anEditor text asString ]
 			ifFalse: [ self numberOfChanges: self numberOfChanges + 1 ] ].
 	anEditor editor
 		when: BrTextEditorInsertedEvent do: block;
@@ -44,20 +44,20 @@ AgdaUI >> editorFor: aPath [
 		constraintsDo: [ :c | 
 			c horizontal exact: 700.
 			c vertical matchParent ].
-	self editorShortCuts: editor.
-	self editorEvents: editor.
+	self editorShortCutsFor: editor path: aPath.
+	self editorEventsFor: editor path: aPath.
 	^ editor
 ]
 
 { #category : #accessing }
-AgdaUI >> editorShortCuts: anEditor [
+AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 	| load save |
 	load := BlShortcutWithAction new
 			combination: BlKeyCombination primaryL;
 			action: [ | future |
 				infoTabGroup selectTabWithLabelString: 'running info'.
-				agdaModel save: anEditor text.
-				self assert: anEditor text = agdaModel ropedText.
+				(agdaModel agdaFiles at: aPath) save: anEditor text.
+				self assert: anEditor text = (agdaModel agdaFiles at: aPath) ropedText.
 				future := agdaModel load.
 				self
 					recurseFuture: future
@@ -65,7 +65,7 @@ AgdaUI >> editorShortCuts: anEditor [
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
 			action: [ self numberOfChanges: 0.
-				agdaModel save: anEditor text ].
+				(agdaModel agdaFiles at: aPath) save: anEditor text ].
 
 	anEditor addShortcut: load.
 	anEditor addShortcut: save
@@ -207,7 +207,7 @@ AgdaUI >> recurseFuture: aFuture final: aBlock [
 					anElementFuture
 						whenSuccess: [ :celement :resp | 
 							| ceditor cinfo |
-							ceditor := self childNamed: 'editor'.
+							ceditor := self childNamed: 'main editor'.
 							cinfo := self childNamed: 'info'.
 							resp
 								ifNotNil: [ nextFuture := resp at: 2.
@@ -217,12 +217,12 @@ AgdaUI >> recurseFuture: aFuture final: aBlock [
 									ceditor beEditable ] ];
 						whenError: [ :celement :anError | 
 							| ceditor cinfo |
-							ceditor := self childNamed: 'editor'.
+							ceditor := self childNamed: 'main editor'.
 							cinfo := self childNamed: 'info'.
 							ceditor text: anError printString ];
 						whenPending: [ :celement | 
 							| ceditor cinfo |
-							ceditor := self childNamed: 'editor'.
+							ceditor := self childNamed: 'main editor'.
 							cinfo := self childNamed: 'info'.
 							ceditor beReadOnlyWithSelection ].
 					anElementFuture future: aFuture ] ]
