@@ -117,7 +117,8 @@ runningInfo := runningInfo , (aMessage asRopedText)
 
 { #category : #accessing }
 AgdaModel >> newFile: aPath [
-	agdaFiles at: aPath put: (AgdaFile path: aPath)
+	agdaFiles at: aPath ifAbsentPut: (AgdaFile path: aPath).
+	^ agdaFiles at: aPath.
 ]
 
 { #category : #accessing }

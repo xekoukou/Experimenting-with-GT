@@ -22,12 +22,6 @@ AgdaUI class >> for: aPath [
 ]
 
 { #category : #accessing }
-AgdaUI >> addEditorOnHpane: aPath on: anId [
-	hpane addChild: (self editorFor: aPath) as: anId.
-	editorIdtoPath at: anId put: aPath
-]
-
-{ #category : #accessing }
 AgdaUI >> editorEventsFor: anEditor path: aPath [
 	| block |
 	block := [ self numberOfChanges > 10
@@ -41,22 +35,12 @@ AgdaUI >> editorEventsFor: anEditor path: aPath [
 ]
 
 { #category : #accessing }
-AgdaUI >> editorFor: aPath [
+AgdaUI >> editorFor: aPath as: anId do: aBlock [
 	| editor agdaF |
-	agdaF := agdaModel agdaFiles at: aPath.
-	editor := BrEditor new.
-	editor
-		aptitude: BrEditorAptitude new;
-		text: (agdaModel agdaFiles at: aPath) ropedText unstyle;
-		constraintsDo: [ :c | 
-			c horizontal exact: 700.
-			c vertical matchParent ].
-	agdaF isEditable
-		ifTrue: [ editor beEditable ]
-		ifFalse: [ editor beReadOnlyWithSelection ].
-	self editorShortCutsFor: editor path: aPath.
-	self editorEventsFor: editor path: aPath.
-	^ editor
+	agdaF := agdaModel newFile: aPath.
+	editor := AgdaEditor agdaFile: agdaF.
+	editorIdtoPath at: anId put: aPath.
+	aBlock value: anId value: editor
 ]
 
 { #category : #accessing }
@@ -84,7 +68,10 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 
 { #category : #accessing }
 AgdaUI >> for: aPath [
-	self addEditorOnHpane: aPath on: 'main editor'
+	self
+		editorFor: aPath
+		as: 'main editor'
+		do: [ :anId :anEditor | hpane addChildFirst: anEditor as: anId ]
 ]
 
 { #category : #accessing }

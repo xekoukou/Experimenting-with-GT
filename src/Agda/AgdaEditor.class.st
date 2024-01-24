@@ -20,9 +20,10 @@ AgdaEditor >> agdaFile: anAgdaFile [
 		aptitude: BrEditorAptitude new;
 		text: agdaFile ropedText unstyle;
 		constraintsDo: [ :c | 
-			c horizontal exact: 700.
+			c horizontal matchParent
 			c vertical matchParent ].
 	self ifEditable.
+	self handleChange.
 ]
 
 { #category : #accessing }
