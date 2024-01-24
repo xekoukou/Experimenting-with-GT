@@ -72,6 +72,7 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 				future := agdaModel load.
 				self
 					recurseFuture: future
+					whenSuccess: [ :resp | agdaModel handleResponse: resp ]
 					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
@@ -206,39 +207,6 @@ AgdaUI >> numberOfChanges: anInteger [
 ]
 
 { #category : #accessing }
-AgdaUI >> recurseFuture: aFuture [
-	self recurseFuture: aFuture final: [  ]
-]
-
-{ #category : #accessing }
-AgdaUI >> recurseFuture: aFuture final: aBlock [
-	aFuture
-		ifNotNil: [ | nextFuture |
-			self
-				withAsyncFutureDo: [ :anElementFuture | 
-					anElementFuture
-						whenSuccess: [ :celement :resp | 
-							| ceditor |
-							ceditor := celement childNamed: 'main editor'.
-							resp
-								ifNotNil: [ nextFuture := resp at: 2.
-									agdaModel handleResponse: (resp at: 1).
-									self recurseFuture: nextFuture final: aBlock ]
-								ifNil: [ aBlock value.
-									ceditor beEditable ] ];
-						whenError: [ :celement :anError | 
-							| ceditor |
-							ceditor := self childNamed: 'main editor'.
-						
-							ceditor text: anError printString ];
-						whenPending: [ :celement | 
-							| ceditor |
-							ceditor := celement childNamed: 'main editor'.
-							ceditor beReadOnlyWithSelection ].
-					anElementFuture future: aFuture ] ]
-]
-
-{ #category : #accessing }
 AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 	aFuture
 		ifNotNil: [ | nextFuture |
@@ -250,16 +218,19 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 							ceditor := celement childNamed: 'main editor'.
 							resp
 								ifNotNil: [ nextFuture := resp at: 2.
-									aSucessBlock cull: celement cull: resp.
-									self recurseFuture: nextFuture final: aBlock ]
+									aSucessBlock cull: celement cull: (resp at: 1).
+									self
+										recurseFuture: nextFuture
+										whenSuccess: aSucessBlock
+										final: aBlock ]
 								ifNil: [ aBlock value.
 									editorIdtoPath
-										keysAndValuesDo: [ :anId :aPath | 
-											| agdaF editor |
+										valuesDo: [ :aPath | 
+											| agdaF |
 											agdaF := agdaModel agdaFiles at: aPath.
 											agdaF isEditable
-												ifTrue: [ editor := celement childNamed: anId.
-													editor beEditable ] ] ] ];
+												ifTrue: [ agdaF beEditable ]
+												ifFalse: [ agdaF beReadOnly ] ] ] ];
 						whenError: [ :celement :anError | 
 							| ceditor |
 							ceditor := celement childNamed: 'main editor'.
@@ -267,10 +238,10 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 							ceditor text: anError printString ];
 						whenPending: [ :celement | 
 							editorIdtoPath
-								do: [ :anId | 
-									| editor |
-									editor := celement childNamed: anId.
-									editor beReadOnlyWithSelection ] ].
+								valuesDo: [ :aPath | 
+									| agdaF |
+									agdaF := agdaModel agdaFiles at: aPath.
+									agdaF beReadOnly ] ].
 					anElementFuture future: aFuture ] ]
 ]
 

@@ -5,7 +5,8 @@ Class {
 		'path',
 		'file',
 		'ropedText',
-		'editable'
+		'editable',
+		'announcer'
 	],
 	#category : #'Agda-agda'
 }
@@ -16,13 +17,20 @@ AgdaFile class >> path: aPath [
 ]
 
 { #category : #accessing }
+AgdaFile >> announcer [
+	^ announcer
+]
+
+{ #category : #accessing }
 AgdaFile >> beEditable [
-	editable := true
+	editable := true.
+	announcer announce: EditableChanged.
 ]
 
 { #category : #accessing }
 AgdaFile >> beReadOnly [
-	editable := false
+	editable := false.
+	announcer announce: EditableChanged.
 ]
 
 { #category : #accessing }
@@ -129,6 +137,7 @@ AgdaFile >> path: aPath [
 	ropedText := BlRunRopedText file: file.
 	ropedText fontName: 'mononoki'.
 	editable := false.
+	announcer := Announcer new.
 ]
 
 { #category : #accessing }
