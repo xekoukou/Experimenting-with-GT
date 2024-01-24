@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'path',
 		'file',
-		'ropedText'
+		'ropedText',
+		'editable'
 	],
 	#category : #'Agda-agda'
 }
@@ -12,6 +13,16 @@ Class {
 { #category : #accessing }
 AgdaFile class >> path: aPath [
 	^ self new path: aPath
+]
+
+{ #category : #accessing }
+AgdaFile >> beEditable [
+	editable := true
+]
+
+{ #category : #accessing }
+AgdaFile >> beReadOnly [
+	editable := false
 ]
 
 { #category : #accessing }
@@ -104,6 +115,11 @@ AgdaFile >> highlight: anArray [
 										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
 											anEvent currentTarget phlow
 												spawnObject: (AgdaUI for: (AgdaModel agda: agda path: Path / (definitionSite at: 'filepath'))) ]) ] ] ]
+]
+
+{ #category : #accessing }
+AgdaFile >> isEditable [
+	^ editable
 ]
 
 { #category : #accessing }

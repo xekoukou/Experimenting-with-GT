@@ -7,7 +7,7 @@ Class {
 		'displayInfo',
 		'agdaMsgs',
 		'agdaFiles',
-		'mpath'
+		'fpath'
 	],
 	#category : #'Agda-agda'
 }
@@ -20,7 +20,7 @@ AgdaModel class >> agda: anAgda path: aPath [
 { #category : #accessing }
 AgdaModel >> agda: anAgda path: aPath [
 	agda := anAgda.
-	mpath := aPath.
+	fpath := aPath.
 	agdaFiles := Dictionary new.
 	agdaFiles at: aPath put: (AgdaFile path: aPath).
 	runningInfo := 'Idle.' asRopedText.
@@ -69,6 +69,11 @@ AgdaModel >> displayWarnings [
 ]
 
 { #category : #accessing }
+AgdaModel >> fpath [
+	^ fpath
+]
+
+{ #category : #accessing }
 AgdaModel >> gtJSONDataFor: aView context: aContext [
 	<gtView>
 	aContext at: #gtTreeExpansionLevel put: 1.
@@ -93,10 +98,10 @@ AgdaModel >> handleResponse: aNewResponse [
 	data := aNewResponse.
 	agdaMsgs add: data.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [ (agdaFiles at: mpath) highlight: (data at: 'info' at: 'payload') ].
+		ifTrue: [ (agdaFiles at: fpath) highlight: (data at: 'info' at: 'payload') ].
 	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
 	(data at: 'kind') = 'ClearHighlighting'
-		ifTrue: [ (agdaFiles at: mpath) clearHighlighting ].
+		ifTrue: [ (agdaFiles at: fpath) clearHighlighting ].
 	(data at: 'kind') = 'RunningInfo'
 		ifTrue: [ self moreRunningInfo: (data at: 'message') ].
 	(data at: 'kind') = 'DisplayInfo'
@@ -106,24 +111,19 @@ AgdaModel >> handleResponse: aNewResponse [
 { #category : #accessing }
 AgdaModel >> load [
 	agdaMsgs removeAll.
-	^ self query: (AgdaQuery new load: mpath)
+	^ self query: (AgdaQuery new load: fpath)
 ]
 
 { #category : #accessing }
 AgdaModel >> load: aPath [
-	mpath := aPath.
+	fpath := aPath.
 	agdaMsgs removeAll.
-	^ self query: (AgdaQuery new load: mpath)
+	^ self query: (AgdaQuery new load: fpath)
 ]
 
 { #category : #accessing }
 AgdaModel >> moreRunningInfo: aMessage [
 runningInfo := runningInfo , (aMessage asRopedText)
-]
-
-{ #category : #accessing }
-AgdaModel >> mpath [
-	^ mpath
 ]
 
 { #category : #accessing }
