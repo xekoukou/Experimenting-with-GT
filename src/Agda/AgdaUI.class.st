@@ -11,7 +11,7 @@ Class {
 		'runningInfo',
 		'hpane',
 		'agdaModel',
-		'editorToHpaneId'
+		'editorIdtoPath'
 	],
 	#category : #'Agda-agda'
 }
@@ -25,7 +25,7 @@ AgdaUI class >> for: anAgdaModel [
 { #category : #accessing }
 AgdaUI >> addEditorOnHpane: aPath on: anId [
 	hpane addChild: (self editorFor: aPath) as: anId.
-	editorToHpaneId at: aPath put: anId
+	editorIdtoPath at: anId put: aPath
 ]
 
 { #category : #accessing }
@@ -43,7 +43,8 @@ AgdaUI >> editorEventsFor: anEditor path: aPath [
 
 { #category : #accessing }
 AgdaUI >> editorFor: aPath [
-	| editor |
+	| editor agdaF |
+	agdaF := agdaModel agdaFiles at: aPath.
 	editor := BrEditor new.
 	editor
 		aptitude: BrEditorAptitude new;
@@ -51,6 +52,9 @@ AgdaUI >> editorFor: aPath [
 		constraintsDo: [ :c | 
 			c horizontal exact: 700.
 			c vertical matchParent ].
+	agdaF isEditable
+		ifTrue: [ editor beEditable ]
+		ifFalse: [ editor beReadOnlyWithSelection ].
 	self editorShortCutsFor: editor path: aPath.
 	self editorEventsFor: editor path: aPath.
 	^ editor
@@ -82,7 +86,7 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 AgdaUI >> for: anAgdaModel [
 	super initialize.
 	agdaModel := anAgdaModel.
-	editorToHpaneId := Dictionary new.
+	editorIdtoPath := Dictionary new.
 	vpane := BrVerticalPane new matchParent.
 	hpane := BrHorizontalPane new matchParent.
 	numberOfChanges := 0.
@@ -249,8 +253,8 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 									aSucessBlock cull: celement cull: resp.
 									self recurseFuture: nextFuture final: aBlock ]
 								ifNil: [ aBlock value.
-									editorToHpaneId
-										keysAndValuesDo: [ :aPath :anId | 
+									editorIdtoPath
+										keysAndValuesDo: [ :anId :aPath | 
 											| agdaF editor |
 											agdaF := agdaModel agdaFiles at: aPath.
 											agdaF isEditable
@@ -262,7 +266,7 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 
 							ceditor text: anError printString ];
 						whenPending: [ :celement | 
-							editorToHpaneId
+							editorIdtoPath
 								do: [ :anId | 
 									| editor |
 									editor := celement childNamed: anId.

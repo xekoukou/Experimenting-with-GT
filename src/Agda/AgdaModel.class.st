@@ -22,7 +22,7 @@ AgdaModel >> agda: anAgda path: aPath [
 	agda := anAgda.
 	fpath := aPath.
 	agdaFiles := Dictionary new.
-	agdaFiles at: aPath put: (AgdaFile path: aPath).
+	self newFile: aPath.
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
 	agdaMsgs := LinkedList new
@@ -124,6 +124,11 @@ AgdaModel >> load: aPath [
 { #category : #accessing }
 AgdaModel >> moreRunningInfo: aMessage [
 runningInfo := runningInfo , (aMessage asRopedText)
+]
+
+{ #category : #accessing }
+AgdaModel >> newFile: aPath [
+	agdaFiles at: aPath put: (AgdaFile path: aPath)
 ]
 
 { #category : #accessing }

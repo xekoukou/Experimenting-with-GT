@@ -127,7 +127,8 @@ AgdaFile >> path: aPath [
 	path := aPath.
 	file := path asFileReference.
 	ropedText := BlRunRopedText file: file.
-	ropedText fontName: 'mononoki'
+	ropedText fontName: 'mononoki'.
+	editable := false.
 ]
 
 { #category : #accessing }
