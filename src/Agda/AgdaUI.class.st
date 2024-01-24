@@ -17,8 +17,8 @@ Class {
 }
 
 { #category : #accessing }
-AgdaUI class >> for: anAgdaModel [
-	self new for: anAgdaModel
+AgdaUI class >> for: aPath [
+	self new for: aPath
 ]
 
 { #category : #accessing }
@@ -83,8 +83,8 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 ]
 
 { #category : #accessing }
-AgdaUI >> for: anAgdaModel [
-	agdaModel := anAgdaModel
+AgdaUI >> for: aPath [
+	self addEditorOnHpane: aPath on: 'main editor'
 ]
 
 { #category : #accessing }
@@ -183,12 +183,11 @@ AgdaUI >> infoTabGroup [
 { #category : #accessing }
 AgdaUI >> initialize [
 	super initialize.
-	agdaModel ifNil: [ agdaModel := AgdaModel new ].
+	agdaModel := AgdaModel new.
 	editorIdtoPath := Dictionary new.
 	vpane := BrVerticalPane new matchParent.
 	hpane := BrHorizontalPane new matchParent.
 	numberOfChanges := 0.
-	self addEditorOnHpane: agdaModel fpath on: 'main editor'.
 	hpane addChild: self verBorder as: 'verBorder'.
 	vpane addChild: hpane as: 'hpane'.
 	vpane addChild: self horBorder as: 'horBorder'.
