@@ -13,22 +13,6 @@ Class {
 }
 
 { #category : #accessing }
-AgdaModel class >> agda: anAgda path: aPath [
-^ self new agda: anAgda path: aPath.
-]
-
-{ #category : #accessing }
-AgdaModel >> agda: anAgda path: aPath [
-	agda := anAgda.
-	fpath := aPath.
-	agdaFiles := Dictionary new.
-	self newFile: aPath.
-	runningInfo := 'Idle.' asRopedText.
-	displayInfo := 'Welcome to Agda.' asRopedText.
-	agdaMsgs := LinkedList new
-]
-
-{ #category : #accessing }
 AgdaModel >> agdaFiles [
 	^ agdaFiles
 ]
@@ -69,11 +53,6 @@ AgdaModel >> displayWarnings [
 ]
 
 { #category : #accessing }
-AgdaModel >> fpath [
-	^ fpath
-]
-
-{ #category : #accessing }
 AgdaModel >> gtJSONDataFor: aView context: aContext [
 	<gtView>
 	aContext at: #gtTreeExpansionLevel put: 1.
@@ -106,6 +85,16 @@ AgdaModel >> handleResponse: aNewResponse [
 		ifTrue: [ self moreRunningInfo: (data at: 'message') ].
 	(data at: 'kind') = 'DisplayInfo'
 		ifTrue: [ self displayInfo: (data at: 'info') ]
+]
+
+{ #category : #accessing }
+AgdaModel >> initialize [
+	super initialize.
+	agda := AgdaMode new.
+	agdaFiles := Dictionary new.
+	runningInfo := 'Idle.' asRopedText.
+	displayInfo := 'Welcome to Agda.' asRopedText.
+	agdaMsgs := LinkedList new
 ]
 
 { #category : #accessing }

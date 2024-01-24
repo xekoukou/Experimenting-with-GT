@@ -120,9 +120,7 @@ AgdaFile >> highlight: anArray [
 					definitionSite
 						ifNotNil: [ text attributesBuilder
 								attribute: (BrTextDoubleClickAttribute new
-										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
-											anEvent currentTarget phlow
-												spawnObject: (AgdaUI for: (AgdaModel agda: agda path: Path / (definitionSite at: 'filepath'))) ]) ] ] ]
+										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: (AgdaUI for: self)	"(AgdaModel agda: agda path: Path / (definitionSite at: 'filepath')" ]) ] ] ]
 ]
 
 { #category : #accessing }

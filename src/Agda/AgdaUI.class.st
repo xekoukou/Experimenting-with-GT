@@ -18,8 +18,7 @@ Class {
 
 { #category : #accessing }
 AgdaUI class >> for: anAgdaModel [
-    
-	^ self new for:anAgdaModel
+	self new for: anAgdaModel
 ]
 
 { #category : #accessing }
@@ -72,7 +71,7 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 				future := agdaModel load.
 				self
 					recurseFuture: future
-					whenSuccess: [ :resp | agdaModel handleResponse: resp ]
+					whenSuccess: [ :celement :resp | agdaModel handleResponse: resp ]
 					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
 	save := BlShortcutWithAction new
 			combination: BlKeyCombination primaryS;
@@ -85,22 +84,7 @@ AgdaUI >> editorShortCutsFor: anEditor path: aPath [
 
 { #category : #accessing }
 AgdaUI >> for: anAgdaModel [
-	super initialize.
-	agdaModel := anAgdaModel.
-	editorIdtoPath := Dictionary new.
-	vpane := BrVerticalPane new matchParent.
-	hpane := BrHorizontalPane new matchParent.
-	numberOfChanges := 0.
-	self addEditorOnHpane: agdaModel fpath on: 'main editor'.
-	hpane addChild: self verBorder as: 'verBorder'.
-	vpane addChild: hpane as: 'hpane'.
-	vpane addChild: self horBorder as: 'horBorder'.
-	vpane addChild: self infoTabGroup as: 'info'.
-	self addChild: vpane.
-	self
-		constraintsDo: [ :c | 
-			c horizontal matchParent.
-			c vertical matchParent ]
+	agdaModel := anAgdaModel
 ]
 
 { #category : #accessing }
@@ -194,6 +178,26 @@ AgdaUI >> infoTabGroup [
 
 
 	^ infoTabGroup
+]
+
+{ #category : #accessing }
+AgdaUI >> initialize [
+	super initialize.
+	agdaModel ifNil: [ agdaModel := AgdaModel new ].
+	editorIdtoPath := Dictionary new.
+	vpane := BrVerticalPane new matchParent.
+	hpane := BrHorizontalPane new matchParent.
+	numberOfChanges := 0.
+	self addEditorOnHpane: agdaModel fpath on: 'main editor'.
+	hpane addChild: self verBorder as: 'verBorder'.
+	vpane addChild: hpane as: 'hpane'.
+	vpane addChild: self horBorder as: 'horBorder'.
+	vpane addChild: self infoTabGroup as: 'info'.
+	self addChild: vpane.
+	self
+		constraintsDo: [ :c | 
+			c horizontal matchParent.
+			c vertical matchParent ]
 ]
 
 { #category : #accessing }
