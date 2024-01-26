@@ -2,10 +2,8 @@ Class {
 	#name : #AgdaUI,
 	#superclass : #BlElement,
 	#instVars : [
-		'label',
 		'editors',
 		'vpane',
-		'numberOfChanges',
 		'displayInfo',
 		'infoTabGroup',
 		'runningInfo',
@@ -18,20 +16,28 @@ Class {
 
 { #category : #accessing }
 AgdaUI class >> for: aPath [
-	self new for: aPath
+	^ self new for: aPath
 ]
 
 { #category : #accessing }
-AgdaUI >> editorEventsFor: anEditor path: aPath [
-	| block |
-	block := [ self numberOfChanges > 10
-			ifTrue: [ self numberOfChanges: 0.
-				(agdaModel agdaFiles at: aPath) save: anEditor text asString ]
-			ifFalse: [ self numberOfChanges: self numberOfChanges + 1 ] ].
-	anEditor editor
-		when: BrTextEditorInsertedEvent do: block;
-		when: BrTextEditorDeletedEvent do: block;
-		when: BlInfiniteDataSourceChanged do: block
+AgdaUI >> agdaShortCutsFor: anEditor [
+	| load save |
+	load := BlShortcutWithAction new
+			combination: BlKeyCombination primaryL;
+			action: [ | future |
+				infoTabGroup selectTabWithLabelString: 'running info'.
+				anEditor save.
+				future := agdaModel load.
+				self
+					recurseFuture: future
+					whenSuccess: [ :celement :resp | agdaModel handleResponse: resp ]
+					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
+	save := BlShortcutWithAction new
+			combination: BlKeyCombination primaryS;
+			action: [ anEditor save ].
+
+	anEditor addShortcut: load.
+	anEditor addShortcut: save
 ]
 
 { #category : #accessing }
@@ -44,34 +50,17 @@ AgdaUI >> editorFor: aPath as: anId do: aBlock [
 ]
 
 { #category : #accessing }
-AgdaUI >> editorShortCutsFor: anEditor path: aPath [
-	| load save |
-	load := BlShortcutWithAction new
-			combination: BlKeyCombination primaryL;
-			action: [ | future |
-				infoTabGroup selectTabWithLabelString: 'running info'.
-				(agdaModel agdaFiles at: aPath) save: anEditor text.
-				self assert: anEditor text = (agdaModel agdaFiles at: aPath) ropedText.
-				future := agdaModel load.
-				self
-					recurseFuture: future
-					whenSuccess: [ :celement :resp | agdaModel handleResponse: resp ]
-					final: [ infoTabGroup selectTabWithLabelString: 'display info' ] ].
-	save := BlShortcutWithAction new
-			combination: BlKeyCombination primaryS;
-			action: [ self numberOfChanges: 0.
-				(agdaModel agdaFiles at: aPath) save: anEditor text ].
-
-	anEditor addShortcut: load.
-	anEditor addShortcut: save
-]
-
-{ #category : #accessing }
 AgdaUI >> for: aPath [
 	self
 		editorFor: aPath
 		as: 'main editor'
-		do: [ :anId :anEditor | hpane addChildFirst: anEditor as: anId ]
+		do: [ :anId :anEditor | 
+			anEditor
+				constraintsDo: [ :c | 
+					c horizontal exact: 700.
+					c vertical matchParent ].
+			self agdaShortCutsFor: anEditor.
+			hpane addChildFirst: anEditor as: anId ]
 ]
 
 { #category : #accessing }
