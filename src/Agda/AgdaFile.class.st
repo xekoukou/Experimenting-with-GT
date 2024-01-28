@@ -24,13 +24,13 @@ AgdaFile >> announcer [
 { #category : #accessing }
 AgdaFile >> beEditable [
 	editable := true.
-	announcer announce: EditableChanged.
+	announcer announce: EditableChanged new
 ]
 
 { #category : #accessing }
 AgdaFile >> beReadOnly [
 	editable := false.
-	announcer announce: EditableChanged.
+	announcer announce: EditableChanged new
 ]
 
 { #category : #accessing }
@@ -39,7 +39,7 @@ ropedText unstyle.
 ]
 
 { #category : #accessing }
-AgdaFile >> highlight: anArray [
+AgdaFile >> highlight: anArray withModel: anAgdaModel [
 	| note |
 	anArray
 		do: [ :info | 
@@ -120,7 +120,12 @@ AgdaFile >> highlight: anArray [
 					definitionSite
 						ifNotNil: [ text attributesBuilder
 								attribute: (BrTextDoubleClickAttribute new
-										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | anEvent currentTarget phlow spawnObject: (AgdaUI for: self)	"(AgdaModel agda: agda path: Path / (definitionSite at: 'filepath')" ]) ] ] ]
+										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | | anEditor|
+										anEditor := anEvent target parent.
+											"announcer
+												announce: (DefinitionLinkClicked
+														path: (definitionSite at: 'filePath')
+														position: (definitionSite at: 'position'))" ]) ] ] ]
 ]
 
 { #category : #accessing }

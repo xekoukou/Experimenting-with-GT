@@ -7,7 +7,9 @@ Class {
 		'displayInfo',
 		'agdaMsgs',
 		'agdaFiles',
-		'fpath'
+		'fpath',
+		'openedCodeLinks',
+		'announcer'
 	],
 	#category : #'Agda-agda'
 }
@@ -77,7 +79,9 @@ AgdaModel >> handleResponse: aNewResponse [
 	data := aNewResponse.
 	agdaMsgs add: data.
 	(data at: 'kind') = 'HighlightingInfo'
-		ifTrue: [ (agdaFiles at: fpath) highlight: (data at: 'info' at: 'payload') ].
+		ifTrue: [ (agdaFiles at: fpath)
+				highlight: (data at: 'info' at: 'payload')
+				withModel: self ].
 	(data at: 'kind') = 'ClearRunningInfo' ifTrue: [ self clearRunningInfo ].
 	(data at: 'kind') = 'ClearHighlighting'
 		ifTrue: [ (agdaFiles at: fpath) clearHighlighting ].
@@ -92,9 +96,11 @@ AgdaModel >> initialize [
 	super initialize.
 	agda := AgdaMode new.
 	agdaFiles := Dictionary new.
+	openedCodeLinks := Dictionary new.
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
-	agdaMsgs := LinkedList new
+	agdaMsgs := LinkedList new.
+	announcer := Announcer new.
 ]
 
 { #category : #accessing }
@@ -119,6 +125,13 @@ runningInfo := runningInfo , (aMessage asRopedText)
 AgdaModel >> newFile: aPath [
 	agdaFiles at: aPath ifAbsentPut: (AgdaFile path: aPath).
 	^ agdaFiles at: aPath.
+]
+
+{ #category : #accessing }
+AgdaModel >> openLink: aPath [
+	| agdaFile |
+	agdaFile := self newFile: aPath.
+	openedCodeLinks at: aPath put: agdaFile.
 ]
 
 { #category : #accessing }

@@ -2,7 +2,6 @@ Class {
 	#name : #AgdaUI,
 	#superclass : #BlElement,
 	#instVars : [
-		'editors',
 		'vpane',
 		'displayInfo',
 		'infoTabGroup',
@@ -27,7 +26,7 @@ AgdaUI >> agdaShortCutsFor: anEditor [
 			action: [ | future |
 				infoTabGroup selectTabWithLabelString: 'running info'.
 				anEditor save.
-				future := agdaModel load.
+				future := agdaModel load: (editorIdtoPath at: anEditor id asSymbol asString).
 				self
 					recurseFuture: future
 					whenSuccess: [ :celement :resp | agdaModel handleResponse: resp ]
@@ -59,8 +58,8 @@ AgdaUI >> for: aPath [
 				constraintsDo: [ :c | 
 					c horizontal exact: 700.
 					c vertical matchParent ].
-			self agdaShortCutsFor: anEditor.
-			hpane addChildFirst: anEditor as: anId ]
+			hpane addChildFirst: anEditor as: anId.
+			self agdaShortCutsFor: anEditor ]
 ]
 
 { #category : #accessing }
