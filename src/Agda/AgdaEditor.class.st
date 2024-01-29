@@ -20,7 +20,7 @@ AgdaEditor >> agdaFile: anAgdaFile [
 	numberOfChanges := 0.
 	self
 		aptitude: BrEditorAptitude new;
-		text: agdaFile ropedText unstyle;
+		text: agdaFile ropedText;
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical matchParent ].

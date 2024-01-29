@@ -8,7 +8,8 @@ Class {
 		'runningInfo',
 		'hpane',
 		'agdaModel',
-		'editorIdtoPath'
+		'editorIdtoPath',
+		'moreVpane'
 	],
 	#category : #'Agda-agda'
 }
@@ -101,6 +102,14 @@ AgdaUI >> gtModelRawFor: aView [
 ]
 
 { #category : #accessing }
+AgdaUI >> handleChange [
+	agdaModel announcer
+		when: UpdateOpenLinks
+		send: #openLinks
+		to: self
+]
+
+{ #category : #accessing }
 AgdaUI >> horBorder [
 	| border |
 	border := BlElement new
@@ -161,9 +170,10 @@ AgdaUI >> initialize [
 	agdaModel := AgdaModel new.
 	editorIdtoPath := Dictionary new.
 	vpane := BrVerticalPane new matchParent.
+	moreVpane := BrVerticalPane new matchParent.
 	hpane := BrHorizontalPane new matchParent.
-	numberOfChanges := 0.
 	hpane addChild: self verBorder as: 'verBorder'.
+	hpane addChild: moreVpane.
 	vpane addChild: hpane as: 'hpane'.
 	vpane addChild: self horBorder as: 'horBorder'.
 	vpane addChild: self infoTabGroup as: 'info'.
@@ -171,17 +181,37 @@ AgdaUI >> initialize [
 	self
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
-			c vertical matchParent ]
+			c vertical matchParent ].
+	self handleChange
 ]
 
 { #category : #accessing }
-AgdaUI >> numberOfChanges [
-^ numberOfChanges
-]
-
-{ #category : #accessing }
-AgdaUI >> numberOfChanges: anInteger [
-	numberOfChanges := anInteger
+AgdaUI >> openLinks [
+	moreVpane removeChildren.
+	agdaModel openLinks
+		do: [ :each | 
+			| pathString position |
+			pathString := each at: 1.
+			position := each at: 2.
+			self
+				editorFor: (Path from: pathString)
+				as: pathString , position asString
+				do: [ :anId :anEditor | 
+					| accordion |
+					accordion := BrAccordion new.
+					accordion
+						hMatchParent;
+						vFitContent;
+						aptitude: BrGlamorousAccordionAptitude new;
+						header: [ BrButton new
+								aptitude: BrMaterialToggleLabelledAptitude new;
+								label: 'hello';
+								action: [ accordion toggleExpanded ] ];
+						content: [ anEditor
+								constraintsDo: [ :c | 
+									c horizontal exact: 700.
+									c vertical exact: 100 ] ].
+					moreVpane addChild: accordion ] ]
 ]
 
 { #category : #accessing }
@@ -216,10 +246,10 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 							ceditor text: anError printString ];
 						whenPending: [ :celement | 
 							editorIdtoPath
-								valuesDo: [ :aPath | 
-									| agdaF |
-									agdaF := agdaModel agdaFiles at: aPath.
-									agdaF beReadOnly ] ].
+								keysDo: [ :anId | 
+									| editor |
+									editor := self childNamed: anId.
+									editor beReadOnlyWithSelection ] ].
 					anElementFuture future: aFuture ] ]
 ]
 

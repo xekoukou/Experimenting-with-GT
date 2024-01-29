@@ -25,6 +25,11 @@ AgdaModel >> agdaMsgs [
 ]
 
 { #category : #accessing }
+AgdaModel >> announcer [
+	^ announcer
+]
+
+{ #category : #accessing }
 AgdaModel >> clearRunningInfo [
 	runningInfo size = 0 ifFalse: [ runningInfo := runningInfo deleteAll ]
 ]
@@ -96,7 +101,7 @@ AgdaModel >> initialize [
 	super initialize.
 	agda := AgdaMode new.
 	agdaFiles := Dictionary new.
-	openedCodeLinks := Dictionary new.
+	openedCodeLinks := Set new.
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
 	agdaMsgs := LinkedList new.
@@ -123,15 +128,23 @@ runningInfo := runningInfo , (aMessage asRopedText)
 
 { #category : #accessing }
 AgdaModel >> newFile: aPath [
-	agdaFiles at: aPath ifAbsentPut: (AgdaFile path: aPath).
-	^ agdaFiles at: aPath.
+	agdaFiles at: aPath ifAbsentPut: [ AgdaFile path: aPath ].
+	^ agdaFiles at: aPath
 ]
 
 { #category : #accessing }
-AgdaModel >> openLink: aPath [
+AgdaModel >> openLink: aPathString at: aPosition [
 	| agdaFile |
-	agdaFile := self newFile: aPath.
-	openedCodeLinks at: aPath put: agdaFile.
+	agdaFile := self newFile: (Path from: aPathString).
+	openedCodeLinks
+		add: {aPathString.
+				aPosition}.
+	announcer announce: UpdateOpenLinks new
+]
+
+{ #category : #accessing }
+AgdaModel >> openLinks [
+	^ openedCodeLinks
 ]
 
 { #category : #accessing }

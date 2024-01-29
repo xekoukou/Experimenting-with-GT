@@ -29,6 +29,7 @@ AgdaFile >> beEditable [
 
 { #category : #accessing }
 AgdaFile >> beReadOnly [
+	self inform: 'fgd'.
 	editable := false.
 	announcer announce: EditableChanged new
 ]
@@ -120,12 +121,10 @@ AgdaFile >> highlight: anArray withModel: anAgdaModel [
 					definitionSite
 						ifNotNil: [ text attributesBuilder
 								attribute: (BrTextDoubleClickAttribute new
-										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | | anEditor|
-										anEditor := anEvent target parent.
-											"announcer
-												announce: (DefinitionLinkClicked
-														path: (definitionSite at: 'filePath')
-														position: (definitionSite at: 'position'))" ]) ] ] ]
+										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
+											anAgdaModel
+												openLink: (definitionSite at: 'filepath')
+												at: (definitionSite at: 'position') ]) ] ] ]
 ]
 
 { #category : #accessing }
@@ -139,8 +138,9 @@ AgdaFile >> path: aPath [
 	file := path asFileReference.
 	ropedText := BlRunRopedText file: file.
 	ropedText fontName: 'mononoki'.
-	editable := false.
-	announcer := Announcer new.
+	ropedText unstyle.
+	editable := true.
+	announcer := Announcer new
 ]
 
 { #category : #accessing }
