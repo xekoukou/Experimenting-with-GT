@@ -197,7 +197,8 @@ AgdaUI >> openLinks [
 				editorFor: (Path from: pathString)
 				as: pathString , position asString
 				do: [ :anId :anEditor | 
-					| accordion |
+					| accordion hh removeButton |
+					hh := BrHorizontalPane new matchParent.
 					accordion := BrAccordion new.
 					accordion
 						constraintsDo: [ :c | 
@@ -209,11 +210,17 @@ AgdaUI >> openLinks [
 								label: 'hellofdgfdg fdg fdg fdf';
 								action: [ accordion toggleExpanded ] ];
 						content: [ anEditor
-								addAptitude: BrGlamorousWithHorizontalResizerAptitude new;
 								constraintsDo: [ :c | 
 									c horizontal exact: 700.
-									c vertical exact: 100. ] ].
-					moreVpane addChild: accordion ] ]
+									c vertical exact: 100 ] ].
+					removeButton := BrButton new
+							aptitude: BrGlamorousButtonLabelAptitude new;
+							label: 'remove';
+							action: [ accordion toggleExpanded ].
+					hh
+						addChild: accordion;
+						addChild: removeButton.
+					moreVpane addChild: hh ] ]
 ]
 
 { #category : #accessing }
