@@ -200,17 +200,19 @@ AgdaUI >> openLinks [
 					| accordion |
 					accordion := BrAccordion new.
 					accordion
-						hMatchParent;
-						vFitContent;
-						aptitude: BrGlamorousAccordionAptitude new;
+						constraintsDo: [ :c | 
+							c horizontal matchParent.
+							c vertical matchParent ];
+						aptitude: BrGlamorousAccordionAptitude2 new;
 						header: [ BrButton new
 								aptitude: BrMaterialToggleLabelledAptitude new;
-								label: 'hello';
+								label: 'hellofdgfdg fdg fdg fdf';
 								action: [ accordion toggleExpanded ] ];
 						content: [ anEditor
+								addAptitude: BrGlamorousWithHorizontalResizerAptitude new;
 								constraintsDo: [ :c | 
 									c horizontal exact: 700.
-									c vertical exact: 100 ] ].
+									c vertical exact: 100. ] ].
 					moreVpane addChild: accordion ] ]
 ]
 

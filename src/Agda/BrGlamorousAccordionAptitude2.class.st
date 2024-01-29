@@ -1,6 +1,6 @@
 Class {
 	#name : #BrGlamorousAccordionAptitude2,
-	#superclass : #BrAccordionAptitude,
+	#superclass : #BrAccordionAptitude2,
 	#instVars : [
 		'contentContainer',
 		'bar',
@@ -44,7 +44,7 @@ BrGlamorousAccordionAptitude2 >> initialize [
 	self
 		addChangeProperty: #(widget layout)
 		with: [ BlLinearLayout horizontal ].
-	self addChangeAddChildAs: #(content) with: [ wrapper ].
+	self addChangeAddChildAs: #(content wrapper) with: [ wrapper ].
 	self
 		add:
 			(BrStyleCommonAptitude new
@@ -97,8 +97,11 @@ BrGlamorousAccordionAptitude2 >> newContentBar [
 { #category : #'instance creation' }
 BrGlamorousAccordionAptitude2 >> newContentContainer [
 	<return: #BlElement>
-
-	^ BlElement new layout: BlLinearLayout horizontal
+	^ BlElement new
+		layout: BlLinearLayout horizontal;
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
+			c vertical fitContent ]
 ]
 
 { #category : #'instance creation' }
@@ -112,17 +115,19 @@ BrGlamorousAccordionAptitude2 >> newHeaderBar [
 { #category : #'instance creation' }
 BrGlamorousAccordionAptitude2 >> newHeaderContainer [
 	<return: #BlElement>
-
 	^ BlElement new
 		layout: BlLinearLayout horizontal;
-		constraintsDo: [ :c |
-			c horizontal matchParent.
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
 			c vertical fitContent ]
 ]
 
 { #category : #'instance creation' }
 BrGlamorousAccordionAptitude2 >> newWrapper [
 	<return: #BlElement>
-
-	^ BlElement new layout: BlLinearLayout vertical
+	^ BlElement new
+		layout: BlLinearLayout vertical;
+		constraintsDo: [ :c | 
+			c horizontal fitContent.
+			c vertical fitContent ]
 ]
