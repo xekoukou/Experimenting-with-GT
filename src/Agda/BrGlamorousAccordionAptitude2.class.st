@@ -101,7 +101,8 @@ BrGlamorousAccordionAptitude2 >> newContentContainer [
 		layout: BlLinearLayout horizontal;
 		constraintsDo: [ :c | 
 			c horizontal fitContent.
-			c vertical fitContent ]
+			c vertical exact: 100 ];
+		addAptitude: BrGlamorousWithVerticalResizerAptitude new
 ]
 
 { #category : #'instance creation' }

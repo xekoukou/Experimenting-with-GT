@@ -212,7 +212,7 @@ AgdaUI >> openLinks [
 						content: [ anEditor
 								constraintsDo: [ :c | 
 									c horizontal exact: 700.
-									c vertical exact: 100 ] ].
+									c vertical matchParent ] ].
 					removeButton := BrButton new
 							aptitude: BrGlamorousButtonLabelAptitude new;
 							label: 'remove';
