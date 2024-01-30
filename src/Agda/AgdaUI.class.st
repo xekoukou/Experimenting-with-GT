@@ -170,7 +170,11 @@ AgdaUI >> initialize [
 	agdaModel := AgdaModel new.
 	editorIdtoPath := Dictionary new.
 	vpane := BrVerticalPane new matchParent.
-	moreVpane := BrVerticalPane new matchParent.
+	moreVpane := BrVerticalPane new
+			matchParent;
+			alignTopLeft;
+			cellSpacing: 0;
+			addAptitude: BrLayoutResizerAptitude new.
 	hpane := BrHorizontalPane new matchParent.
 	hpane addChild: self verBorder as: 'verBorder'.
 	hpane addChild: moreVpane.
@@ -190,37 +194,47 @@ AgdaUI >> openLinks [
 	moreVpane removeChildren.
 	agdaModel openLinks
 		do: [ :each | 
-			| pathString position |
-			pathString := each at: 1.
-			position := each at: 2.
+			| title pathString position |
+			title := (each at: 1) asString.
+			pathString := each at: 2.
+			position := each at: 3.
 			self
 				editorFor: (Path from: pathString)
 				as: pathString , position asString
 				do: [ :anId :anEditor | 
-					| accordion hh removeButton |
-					hh := BrHorizontalPane new matchParent.
+					| accordion |
 					accordion := BrAccordion new.
 					accordion
 						constraintsDo: [ :c | 
 							c horizontal matchParent.
 							c vertical matchParent ];
-						aptitude: BrGlamorousAccordionAptitude2 new;
-						header: [ BrButton new
-								aptitude: BrMaterialToggleLabelledAptitude new;
-								label: 'hellofdgfdg fdg fdg fdf';
-								action: [ accordion toggleExpanded ] ];
+						aptitude: BrGlamorousAccordionWithBorderAptitude2 new;
+						header: [ | toggleButton removeButton hp |
+							hp := BrHorizontalPane new fitContent.
+							toggleButton := BrButton new
+									aptitude: BrMaterialToggleLabelledAptitude new;
+									label: title;
+									action: [ accordion toggleExpanded ].
+							removeButton := BrButton new
+									aptitude: BrGlamorousButtonWithIconCircularAptitude new;
+									icon: BrGlamorousIcons close;
+									label: 'close';
+									beNormalSize;
+									action: [ accordion toggleExpanded ];
+									constraintsDo: [ :c | 
+										c horizontal fitContent.
+										c vertical matchParent ];
+									alignCenter.
+							hp
+								addChild: toggleButton;
+								addChild: removeButton ];
 						content: [ anEditor
 								constraintsDo: [ :c | 
 									c horizontal exact: 700.
-									c vertical matchParent ] ].
-					removeButton := BrButton new
-							aptitude: BrGlamorousButtonLabelAptitude new;
-							label: 'remove';
-							action: [ accordion toggleExpanded ].
-					hh
-						addChild: accordion;
-						addChild: removeButton.
-					moreVpane addChild: hh ] ]
+									c vertical matchParent ];
+								scrollToPosition: (anEditor text asString lineNumberCorrespondingToIndex: position) ].
+
+					moreVpane addChild: accordion ] ]
 ]
 
 { #category : #accessing }

@@ -133,11 +133,12 @@ AgdaModel >> newFile: aPath [
 ]
 
 { #category : #accessing }
-AgdaModel >> openLink: aPathString at: aPosition [
+AgdaModel >> openLink: title path: aPathString position: aPosition [
 	| agdaFile |
 	agdaFile := self newFile: (Path from: aPathString).
 	openedCodeLinks
-		add: {aPathString.
+		add: {title.
+				aPathString.
 				aPosition}.
 	announcer announce: UpdateOpenLinks new
 ]

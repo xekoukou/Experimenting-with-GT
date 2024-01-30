@@ -123,8 +123,9 @@ AgdaFile >> highlight: anArray withModel: anAgdaModel [
 								attribute: (BrTextDoubleClickAttribute new
 										action: [ :aTBrTextEditorTextualPiece :aTarget :aTextEditor :anEvent | 
 											anAgdaModel
-												openLink: (definitionSite at: 'filepath')
-												at: (definitionSite at: 'position') ]) ] ] ]
+												openLink: text
+												path: (definitionSite at: 'filepath')
+												position: (definitionSite at: 'position') ]) ] ] ]
 ]
 
 { #category : #accessing }
