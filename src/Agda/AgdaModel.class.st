@@ -101,7 +101,7 @@ AgdaModel >> initialize [
 	super initialize.
 	agda := AgdaMode new.
 	agdaFiles := Dictionary new.
-	openedCodeLinks := Set new.
+	openedCodeLinks := OrderedCollection new.
 	runningInfo := 'Idle.' asRopedText.
 	displayInfo := 'Welcome to Agda.' asRopedText.
 	agdaMsgs := LinkedList new.
@@ -134,13 +134,18 @@ AgdaModel >> newFile: aPath [
 
 { #category : #accessing }
 AgdaModel >> openLink: title path: aPathString position: aPosition [
-	| agdaFile |
+	| agdaFile size link |
 	agdaFile := self newFile: (Path from: aPathString).
-	openedCodeLinks
-		add: {title.
-				aPathString.
-				aPosition}.
-	announcer announce: UpdateOpenLinks new
+	link := {title asString.
+			aPathString.
+			aPosition}.
+	size := openedCodeLinks
+			add: link;
+			size.
+	size
+		= (openedCodeLinks
+				removeDuplicates;
+				size) ifTrue: [ announcer announce: (NewOpenLink link: link) ]
 ]
 
 { #category : #accessing }
@@ -151,6 +156,12 @@ AgdaModel >> openLinks [
 { #category : #accessing }
 AgdaModel >> query: aQuery [
 	^ agda query: aQuery
+]
+
+{ #category : #accessing }
+AgdaModel >> removeLink: aLink [
+	openedCodeLinks remove: aLink ifAbsent: [  ].
+	announcer announce: (RemoveOpenLink link: aLink)
 ]
 
 { #category : #accessing }

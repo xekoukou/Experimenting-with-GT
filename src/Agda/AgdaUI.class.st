@@ -60,7 +60,8 @@ AgdaUI >> for: aPath [
 					c horizontal exact: 700.
 					c vertical matchParent ].
 			hpane addChildFirst: anEditor as: anId.
-			self agdaShortCutsFor: anEditor ]
+			self agdaShortCutsFor: anEditor ].
+	self openLinks
 ]
 
 { #category : #accessing }
@@ -104,9 +105,8 @@ AgdaUI >> gtModelRawFor: aView [
 { #category : #accessing }
 AgdaUI >> handleChange [
 	agdaModel announcer
-		when: UpdateOpenLinks
-		send: #openLinks
-		to: self
+		when: NewOpenLink do: [ :anEvent | self openLink: anEvent link ];
+		when: RemoveOpenLink do: [ :anEvent | self removeLink: anEvent link ]
 ]
 
 { #category : #accessing }
@@ -186,55 +186,58 @@ AgdaUI >> initialize [
 		constraintsDo: [ :c | 
 			c horizontal matchParent.
 			c vertical matchParent ].
-	self handleChange
+	self handleChange.
+	
+]
+
+{ #category : #accessing }
+AgdaUI >> openLink: aLink [
+	| title pathString position |
+	title := (aLink at: 1) asString.
+	pathString := aLink at: 2.
+	position := aLink at: 3.
+	self
+		editorFor: (Path from: pathString)
+		as: pathString , position asString
+		do: [ :anId :anEditor | 
+			| accordion |
+			accordion := BrAccordion new.
+			accordion
+				constraintsDo: [ :c | 
+					c horizontal matchParent.
+					c vertical matchParent ];
+				aptitude: BrGlamorousAccordionWithBorderAptitude2 new;
+				header: [ | toggleButton removeButton hp |
+					hp := BrHorizontalPane new fitContent.
+					toggleButton := BrButton new
+							aptitude: BrMaterialToggleLabelledAptitude new;
+							label: title;
+							action: [ accordion toggleExpanded ].
+					removeButton := BrButton new
+							aptitude: BrGlamorousButtonWithIconCircularAptitude new;
+							icon: BrGlamorousIcons close;
+							label: 'close';
+							beNormalSize;
+							action: [ agdaModel removeLink: aLink ];
+							constraintsDo: [ :c | 
+								c horizontal fitContent.
+								c vertical matchParent ];
+							alignCenter.
+					hp
+						addChild: toggleButton;
+						addChild: removeButton ];
+				content: [ anEditor
+						constraintsDo: [ :c | 
+							c horizontal exact: 700.
+							c vertical matchParent ];
+						scrollToPosition: (anEditor text asString lineNumberCorrespondingToIndex: position) ].
+			moreVpane addChild: accordion as: pathString , position asString ]
 ]
 
 { #category : #accessing }
 AgdaUI >> openLinks [
 	moreVpane removeChildren.
-	agdaModel openLinks
-		do: [ :each | 
-			| title pathString position |
-			title := (each at: 1) asString.
-			pathString := each at: 2.
-			position := each at: 3.
-			self
-				editorFor: (Path from: pathString)
-				as: pathString , position asString
-				do: [ :anId :anEditor | 
-					| accordion |
-					accordion := BrAccordion new.
-					accordion
-						constraintsDo: [ :c | 
-							c horizontal matchParent.
-							c vertical matchParent ];
-						aptitude: BrGlamorousAccordionWithBorderAptitude2 new;
-						header: [ | toggleButton removeButton hp |
-							hp := BrHorizontalPane new fitContent.
-							toggleButton := BrButton new
-									aptitude: BrMaterialToggleLabelledAptitude new;
-									label: title;
-									action: [ accordion toggleExpanded ].
-							removeButton := BrButton new
-									aptitude: BrGlamorousButtonWithIconCircularAptitude new;
-									icon: BrGlamorousIcons close;
-									label: 'close';
-									beNormalSize;
-									action: [ accordion toggleExpanded ];
-									constraintsDo: [ :c | 
-										c horizontal fitContent.
-										c vertical matchParent ];
-									alignCenter.
-							hp
-								addChild: toggleButton;
-								addChild: removeButton ];
-						content: [ anEditor
-								constraintsDo: [ :c | 
-									c horizontal exact: 700.
-									c vertical matchParent ];
-								scrollToPosition: (anEditor text asString lineNumberCorrespondingToIndex: position) ].
-
-					moreVpane addChild: accordion ] ]
+	agdaModel openLinks do: [ :each | self openLink: each ].
 ]
 
 { #category : #accessing }
@@ -274,6 +277,14 @@ AgdaUI >> recurseFuture: aFuture whenSuccess: aSucessBlock final: aBlock [
 									editor := self childNamed: anId.
 									editor beReadOnlyWithSelection ] ].
 					anElementFuture future: aFuture ] ]
+]
+
+{ #category : #accessing }
+AgdaUI >> removeLink: aLink [
+	| pathString position |
+	pathString := aLink at: 2.
+	position := aLink at: 3.
+	moreVpane removeChildNamed: pathString , position asString
 ]
 
 { #category : #accessing }
