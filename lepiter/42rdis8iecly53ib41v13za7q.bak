@@ -29,14 +29,48 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2024-01-30T17:34:03.437155+02:00"
+						"dateAndTimeString" : "2024-02-01T13:59:25.641223+02:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "bNIn4ozMDQCstTjDBCncRA=="
 				},
-				"code" : "accordion := BrAccordion new.\raccordion\r\tconstraintsDo: [ :c | \r\t\tc horizontal matchParent.\r\t\tc vertical matchParent ];\r\taptitude: BrGlamorousAccordionWithBorderAptitude2 new;\r\theader: [ | one two hh |\r\t\thh := BrHorizontalPane new fitContent.\r\t\tone := BrButton new\r\t\t\t\taptitude: BrMaterialToggleLabelledAptitude new;\r\t\t\t\tlabel: 'hi hhere';\r\t\t\t\taction: [ accordion toggleExpanded ].\r\t\ttwo := BrButton new\r\t\t\t\taptitude: BrGlamorousButtonWithIconCircularAptitude new;\r\t\t\t\ticon: BrGlamorousIcons close;\r\t\t\t\tlabel: 'close';\r\t\t\t\tbeSmallSize;\r\t\t\t\taction: [ accordion toggleExpanded ];\r\t\t\t\tconstraintsDo: [ :c | \r\t\t\t\t\tc horizontal fitContent.\r\t\t\t\t\tc vertical matchParent ];\r\t\t\t\talignCenter.\r\t\thh\r\t\t\taddChild: one;\r\t\t\taddChild: two ];\r\tcontent: [ BrLabel new\r\t\t\taptitude: BrLabelAptitude new;\r\t\t\ttext: 'content';\r\t\t\tconstraintsDo: [ :c | \r\t\t\t\tc horizontal exact: 700.\r\t\t\t\tc vertical matchParent ] ]"
+				"code" : "\r\raccordion := BrAccordion new.\raccordion\r\tconstraintsDo: [ :c | \r\t\tc horizontal matchParent.\r\t\tc vertical matchParent ];\r\taptitude: BrGlamorousAccordionWithBorderAptitude2 new;\r\theader: [ | one two hh |\r\t\thh := BrHorizontalPane new fitContent.\r\t\tone := BrButton new\r\t\t\t\taptitude: BrMaterialToggleLabelledAptitude new;\r\t\t\t\tlabel: 'hi hhere';\r\t\t\t\taction: [ accordion toggleExpanded ].\r\t\ttwo := BrButton new\r\t\t\t\taptitude: BrGlamorousButtonWithIconCircularAptitude new;\r\t\t\t\ticon: BrGlamorousIcons close;\r\t\t\t\tlabel: 'close';\r\t\t\t\tbeNormalSize;\r\t\t\t\taction: [ accordion toggleExpanded ];\r\t\t\t\tconstraintsDo: [ :c | \r\t\t\t\t\tc horizontal fitContent.\r\t\t\t\t\tc vertical matchParent ];\r\t\t\t\talignCenter.\r\t\thh\r\t\t\taddChild: one;\r\t\t\taddChild: two ];\r\tcontent: [ BrLabel new\r\t\t\taptitude: BrLabelAptitude new;\r\t\t\ttext: 'content';\r\t\t\tconstraintsDo: [ :c | \r\t\t\t\tc horizontal exact: 700.\r\t\t\t\tc vertical matchParent ] ].\r\t\t\t\t\raccordion2 := BrAccordion new.\raccordion2\r\tconstraintsDo: [ :c | \r\t\tc horizontal matchParent.\r\t\tc vertical matchParent ];\r\taptitude: BrGlamorousAccordionWithBorderAptitude2 new;\r\theader: [ | one two hh |\r\t\thh := BrHorizontalPane new fitContent.\r\t\tone := BrButton new\r\t\t\t\taptitude: BrMaterialToggleLabelledAptitude new;\r\t\t\t\tlabel: 'hi hhere';\r\t\t\t\taction: [ accordion2 toggleExpanded ].\r\t\ttwo := BrButton new\r\t\t\t\taptitude: BrGlamorousButtonWithIconCircularAptitude new;\r\t\t\t\ticon: BrGlamorousIcons close;\r\t\t\t\tlabel: 'close';\r\t\t\t\tbeNormalSize;\r\t\t\t\taction: [ accordion2 toggleExpanded ];\r\t\t\t\tconstraintsDo: [ :c | \r\t\t\t\t\tc horizontal fitContent.\r\t\t\t\t\tc vertical matchParent ];\r\t\t\t\talignCenter.\r\t\thh\r\t\t\taddChild: one;\r\t\t\taddChild: two ];\r\tcontent: [ BrLabel new\r\t\t\taptitude: BrLabelAptitude new;\r\t\t\ttext: 'content';\r\t\t\tconstraintsDo: [ :c | \r\t\t\t\tc horizontal exact: 700.\r\t\t\t\tc vertical matchParent ] ].\r\r"
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-01-30T20:32:14.208566+02:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2024-02-01T19:03:11.806052+02:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "pu/at4/MDQCn57d3A6wo6w=="
+				},
+				"code" : "moreVpane := BrVerticalPane new\r\t\tmatchParent;\r\t\talignTopLeft;\r\t\tcellSpacing: 0.\rmoreVpane\r\taddChild: accordion;\r\taddChild: accordion2"
 			},
 			{
 				"__type" : "textSnippet",
